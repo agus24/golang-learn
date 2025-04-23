@@ -27,6 +27,6 @@ func setupAuthRoutes(r *gin.RouterGroup) {
 	auth := r.Group("/auth")
 
 	auth.POST("/login", authController.Login)
-	auth.GET("/user", middlewares.AuthMiddleware(), authController.User)
-	auth.POST("/user", middlewares.AuthMiddleware(), userController.CreateUser)
+	auth.GET("/user", middlewares.AuthMiddleware, authController.User)
+	auth.POST("/user", middlewares.AuthMiddleware, userController.CreateUser)
 }

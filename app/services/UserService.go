@@ -55,6 +55,13 @@ func (self UserService) CreateUser(data requests.UserCreateRequest) (*model.User
 		return nil, err
 	}
 
-	user, error := self.repo.CreateUser(data.Username, password, data.Name)
-	return user, error
+	result, err := self.repo.CreateUser(data.Username, password, data.Name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	id, err := result.LastInsertId()
+
+	return self.repo.GetUserById(id)
 }

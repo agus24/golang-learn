@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"golang_gin/app/ginapp_2/model"
 	. "golang_gin/app/ginapp_2/table"
 	"golang_gin/utils"
@@ -30,6 +31,10 @@ func (self *UserRepository) getSingleUser(stmt SelectStatement) (*model.Users, e
 
 	err := stmt.Query(self.db, &results)
 
+	if len(results) == 0 {
+		return nil, errors.New("User not found")
+	}
+
 	return &results[0], err
 }
 
@@ -53,22 +58,9 @@ func (self *UserRepository) GetUserByUsername(username string) (*model.Users, er
 	return self.getSingleUser(stmt)
 }
 
-func (self *UserRepository) CreateUser(username string, password string, name string) (*model.Users, error) {
+func (self *UserRepository) CreateUser(username string, password string, name string) (sql.Result, error) {
 	utils.StartTransaction(self.db)
 	stmt := Users.INSERT(Users.Username, Users.Password, Users.Name).VALUES(username, password, name)
 
-	res, err := stmt.Exec(self.db)
-
-	if err != nil {
-		return nil, err
-	}
-
-	id, err := res.LastInsertId()
-
-	if err != nil {
-		return nil, err
-	}
-
-	user, err := self.GetUserById(id)
-	return user, err
+	return stmt.Exec(self.db)
 }
