@@ -29,7 +29,7 @@ func (self UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	user, err := self.service.CreateUser(ctx, req)
+	user, err := self.service.CreateUser(req)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Failed create user"})

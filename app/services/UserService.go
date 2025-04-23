@@ -7,8 +7,6 @@ import (
 	"golang_gin/app/repositories"
 	"golang_gin/app/requests"
 	"golang_gin/utils"
-
-	"github.com/gin-gonic/gin"
 )
 
 type UserService struct {
@@ -26,9 +24,9 @@ func NewUserService(userRepository *repositories.UserRepository) *UserService {
 	}
 }
 
-func (self UserService) LoginUser(ctx *gin.Context, username string, password string) (LoginResult, error) {
+func (self UserService) LoginUser(username string, password string) (LoginResult, error) {
 	var token string
-	user, err := self.repo.GetUserByUsername(ctx, username)
+	user, err := self.repo.GetUserByUsername(username)
 	if err != nil {
 		return LoginResult{nil, nil}, err
 	}
@@ -46,17 +44,17 @@ func (self UserService) LoginUser(ctx *gin.Context, username string, password st
 	return LoginResult{user, &token}, nil
 }
 
-func (self UserService) GetUserById(ctx *gin.Context, id int64) (*model.Users, error) {
-	return self.repo.GetUserById(ctx, id)
+func (self UserService) GetUserById(id int64) (*model.Users, error) {
+	return self.repo.GetUserById(id)
 }
 
-func (self UserService) CreateUser(ctx *gin.Context, data requests.UserCreateRequest) (*model.Users, error) {
+func (self UserService) CreateUser(data requests.UserCreateRequest) (*model.Users, error) {
 	password, err := utils.HashPassword(data.Password)
 
 	if err != nil {
 		return nil, err
 	}
 
-	user, error := self.repo.CreateUser(ctx, data.Username, password, data.Name)
+	user, error := self.repo.CreateUser(data.Username, password, data.Name)
 	return user, error
 }

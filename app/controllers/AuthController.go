@@ -35,7 +35,7 @@ func (self AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
-	output, err := self.service.LoginUser(ctx, req.Username, req.Password)
+	output, err := self.service.LoginUser(req.Username, req.Password)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid credentials"})
@@ -55,7 +55,7 @@ func (self AuthController) User(ctx *gin.Context) {
 		return
 	}
 
-	user, err := self.service.GetUserById(ctx, int64(userID))
+	user, err := self.service.GetUserById(int64(userID))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "User not found"})
 		return
