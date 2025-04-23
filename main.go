@@ -13,6 +13,7 @@ var PasetoSecret string
 
 func main() {
 	config.InitEnv()
+	config.InitConfig()
 
 	conn, err := sql.Open("mysql", config.GetDsn())
 

@@ -43,7 +43,6 @@ func generateDsn() *string {
 
 func RunMigrations() {
 	dsn := GetDsn()
-	println(dsn)
 	m, err := migrate.New(
 		"file://db/migrations",
 		"mysql://"+dsn,

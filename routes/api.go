@@ -18,6 +18,7 @@ func SetupApiRoutes(r *gin.Engine, conn *sql.DB) {
 
 	v1.GET("/hello", helloController.Hello)
 	setupAuthRoutes(v1)
+	setupCategoryRoutes(v1)
 }
 
 func setupAuthRoutes(r *gin.RouterGroup) {
@@ -29,4 +30,15 @@ func setupAuthRoutes(r *gin.RouterGroup) {
 	auth.POST("/login", authController.Login)
 	auth.GET("/user", middlewares.AuthMiddleware, authController.User)
 	auth.POST("/user", middlewares.AuthMiddleware, userController.CreateUser)
+}
+
+func setupCategoryRoutes(r *gin.RouterGroup) {
+	categoryController := controllers.NewCategoryController(db)
+
+	category := r.Group("/categories", middlewares.AuthMiddleware)
+	{
+		category.GET("", categoryController.GetAllCategories)
+		category.POST("", categoryController.CreateCategory)
+	}
+
 }

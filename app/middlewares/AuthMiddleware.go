@@ -14,7 +14,7 @@ func AuthMiddleware(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error": "Missing or invalid Authorization header",
+			"error": "Unauthenticated",
 		})
 		return
 	}
@@ -22,7 +22,7 @@ func AuthMiddleware(c *gin.Context) {
 	token := strings.TrimPrefix(authHeader, "Bearer ")
 	if token == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error": "Token is empty",
+			"error": "Unauthenticated",
 		})
 		return
 	}
@@ -32,7 +32,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error": "Invalid token",
+			"error": "Unauthenticated",
 		})
 		return
 	}
