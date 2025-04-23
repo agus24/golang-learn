@@ -5,8 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/golang-migrate/migrate"
 	"github.com/joho/godotenv"
+
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 var dsn *string
@@ -40,6 +43,7 @@ func generateDsn() *string {
 
 func RunMigrations() {
 	dsn := GetDsn()
+	println(dsn)
 	m, err := migrate.New(
 		"file://db/migrations",
 		"mysql://"+dsn,

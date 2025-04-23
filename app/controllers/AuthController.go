@@ -27,43 +27,39 @@ func NewAuthController(db *sql.DB) *AuthController {
 	}
 }
 
-func (self AuthController) Login() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		var req LoginRequest
+func (self AuthController) Login(ctx *gin.Context) {
+	var req LoginRequest
 
-		if err := ctx.ShouldBindJSON(&req); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
-			return
-		}
-
-		output, err := self.service.LoginUser(ctx, req.Username, req.Password)
-
-		if err != nil {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
-			return
-		}
-
-		ctx.JSON(http.StatusOK, gin.H{"user": output.User, "token": output.Token})
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
 	}
+
+	output, err := self.service.LoginUser(ctx, req.Username, req.Password)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid credentials"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"user": serializers.User(output.User), "token": output.Token})
 }
 
-func (self AuthController) User() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		val := ctx.MustGet("userID").(string)
+func (self AuthController) User(ctx *gin.Context) {
+	val := ctx.MustGet("userID").(string)
 
-		userID, err := strconv.Atoi(val)
+	userID, err := strconv.Atoi(val)
 
-		if err != nil {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user ID"})
-			return
-		}
-
-		user, err := self.service.GetUserById(ctx, int64(userID))
-		if err != nil {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
-			return
-		}
-
-		ctx.JSON(http.StatusOK, gin.H{"data": serializers.User(user)})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
 	}
+
+	user, err := self.service.GetUserById(ctx, int64(userID))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "User not found"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"data": serializers.User(user)})
 }

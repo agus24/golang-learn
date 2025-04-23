@@ -5,6 +5,7 @@ import (
 	"golang_gin/app/ginapp_2/model"
 	. "golang_gin/app/libraries"
 	"golang_gin/app/repositories"
+	"golang_gin/app/requests"
 	"golang_gin/utils"
 
 	"github.com/gin-gonic/gin"
@@ -46,10 +47,16 @@ func (self UserService) LoginUser(ctx *gin.Context, username string, password st
 }
 
 func (self UserService) GetUserById(ctx *gin.Context, id int64) (*model.Users, error) {
-	user, err := self.repo.GetUserById(ctx, id)
+	return self.repo.GetUserById(ctx, id)
+}
+
+func (self UserService) CreateUser(ctx *gin.Context, data requests.UserCreateRequest) (*model.Users, error) {
+	password, err := utils.HashPassword(data.Password)
+
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	user, error := self.repo.CreateUser(ctx, data.Username, password, data.Name)
+	return user, error
 }

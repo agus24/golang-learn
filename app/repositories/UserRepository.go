@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"golang_gin/app/ginapp_2/model"
 	. "golang_gin/app/ginapp_2/table"
+	"golang_gin/utils"
 
-	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/go-jet/jet/v2/mysql"
 )
@@ -18,6 +18,22 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
+func (self *UserRepository) getMultipleUsers(ctx *gin.Context, stmt SelectStatement) ([]model.Users, error) {
+	var results []model.Users
+
+	err := stmt.QueryContext(ctx, self.db, &results)
+
+	return results, err
+}
+
+func (self *UserRepository) getSingleUser(ctx *gin.Context, stmt SelectStatement) (*model.Users, error) {
+	var results []model.Users
+
+	err := stmt.QueryContext(ctx, self.db, &results)
+
+	return &results[0], err
+}
+
 func (self *UserRepository) GetUserById(ctx *gin.Context, id int64) (*model.Users, error) {
 	stmt := SELECT(
 		Users.AllColumns,
@@ -25,14 +41,7 @@ func (self *UserRepository) GetUserById(ctx *gin.Context, id int64) (*model.User
 		FROM(Users).
 		WHERE(Users.ID.EQ(Int64(id)))
 
-	var results []model.Users
-
-	err := stmt.QueryContext(ctx, self.db, &results)
-	if err != nil {
-		return nil, err
-	}
-
-	return &results[0], nil
+	return self.getSingleUser(ctx, stmt)
 }
 
 func (self *UserRepository) GetUserByUsername(ctx *gin.Context, username string) (*model.Users, error) {
@@ -42,14 +51,25 @@ func (self *UserRepository) GetUserByUsername(ctx *gin.Context, username string)
 		FROM(Users).
 		WHERE(Users.Username.EQ(String(username)))
 
-	var results []model.Users
+	return self.getSingleUser(ctx, stmt)
+}
 
-	err := stmt.QueryContext(ctx, self.db, &results)
+func (self *UserRepository) CreateUser(ctx *gin.Context, username string, password string, name string) (*model.Users, error) {
+	utils.StartTransaction(self.db)
+	stmt := Users.INSERT(Users.Username, Users.Password, Users.Name).VALUES(username, password, name)
+
+	res, err := stmt.Exec(self.db)
+
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(results[0])
+	id, err := res.LastInsertId()
 
-	return &results[0], nil
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := self.GetUserById(ctx, id)
+	return user, err
 }

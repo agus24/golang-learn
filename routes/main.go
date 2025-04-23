@@ -18,9 +18,10 @@ func NewRoute(port string) *Route {
 func (route *Route) SetupRoutes(conn *sql.DB) {
 	r := gin.Default()
 
+	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 	r.Use(middlewares.CorsMiddleware())
-	r.Use(middlewares.RateLimiterMiddleware())
+	// r.Use(middlewares.RateLimiterMiddleware())
 
 	SetupApiRoutes(r, conn)
 
