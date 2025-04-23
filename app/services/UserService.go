@@ -10,7 +10,7 @@ import (
 )
 
 type UserService struct {
-	repo *repositories.UserRepository
+	Repo *repositories.UserRepository
 }
 
 type LoginResult struct {
@@ -26,7 +26,7 @@ func NewUserService(userRepository *repositories.UserRepository) *UserService {
 
 func (self UserService) LoginUser(username string, password string) (LoginResult, error) {
 	var token string
-	user, err := self.repo.GetUserByUsername(username)
+	user, err := self.Repo.GetUserByUsername(username)
 	if err != nil {
 		return LoginResult{nil, nil}, err
 	}
@@ -45,7 +45,7 @@ func (self UserService) LoginUser(username string, password string) (LoginResult
 }
 
 func (self UserService) GetUserById(id int64) (*model.Users, error) {
-	return self.repo.GetUserById(id)
+	return self.Repo.GetUserById(id)
 }
 
 func (self UserService) CreateUser(data requests.UserCreateRequest) (*model.Users, error) {
@@ -55,7 +55,7 @@ func (self UserService) CreateUser(data requests.UserCreateRequest) (*model.User
 		return nil, err
 	}
 
-	result, err := self.repo.CreateUser(data.Username, password, data.Name)
+	result, err := self.Repo.CreateUser(data.Username, password, data.Name)
 
 	if err != nil {
 		return nil, err
@@ -63,5 +63,5 @@ func (self UserService) CreateUser(data requests.UserCreateRequest) (*model.User
 
 	id, err := result.LastInsertId()
 
-	return self.repo.GetUserById(id)
+	return self.Repo.GetUserById(id)
 }

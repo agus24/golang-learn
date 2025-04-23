@@ -6,7 +6,7 @@ import (
 	"golang_gin/app/serializers"
 	"golang_gin/app/services"
 	"net/http"
-	// "strconv"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,17 +46,16 @@ func (self AuthController) Login(ctx *gin.Context) {
 }
 
 func (self AuthController) User(ctx *gin.Context) {
-	// val := ctx.MustGet("userID").(string)
-	//
-	// userID, err := strconv.Atoi(val)
-	//
-	// if err != nil {
-	// 	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
-	// 	return
-	// }
+	val := ctx.MustGet("userID").(string)
 
-	// user, err := self.service.GetUserById(int64(userID))
-	user, err := self.service.GetUserById(int64(0))
+	userID, err := strconv.Atoi(val)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	user, err := self.service.GetUserById(int64(userID))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "User not found"})
 		return

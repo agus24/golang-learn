@@ -29,6 +29,13 @@ func (self UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
+	_, err := self.service.Repo.GetUserByUsername(req.Username)
+
+	if err == nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Username already exists"})
+		return
+	}
+
 	user, err := self.service.CreateUser(req)
 
 	if err != nil {
