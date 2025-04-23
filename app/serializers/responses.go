@@ -2,6 +2,11 @@ package serializers
 
 import "time"
 
+type PaginationResponse struct {
+	Page    int64 `json:"page"`
+	PerPage int64 `json:"per_page"`
+}
+
 type UserResponse struct {
 	ID        int64      `json:"id"`
 	Username  string     `json:"username"`

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"golang_gin/config"
 	"net/http"
+	"runtime/debug"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -30,20 +31,31 @@ func ParsePageAndPerPage(pageQuery string, perPageQuery string) (*int64, *int64,
 	return &page, &perPage, nil
 }
 
-func Handle[T any](c *gin.Context, dataFunc func() T, err error, status int) {
-	if err != nil {
-		var errorMessage string
-		println(config.Debug)
-
-		if config.Debug {
-			errorMessage = err.Error()
-		} else {
-			errorMessage = "Internal Server Error"
-		}
-
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": errorMessage})
-		return
+func ParseToInt(ctx *gin.Context, param string) *int64 {
+	if param == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "ID is required"})
+		return nil
 	}
 
-	c.JSON(status, gin.H{"data": dataFunc()})
+	paramInt, err := strconv.ParseInt(param, 10, 64)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return nil
+	}
+
+	return &paramInt
+}
+
+func Handle[T any](c *gin.Context, dataFunc func() T, err error, status int) {
+	if err != nil {
+		if gin.Mode() == gin.DebugMode {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "trace": string(debug.Stack())})
+			return
+		} else {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+			return
+		}
+	}
+
+	c.JSON(status, dataFunc())
 }

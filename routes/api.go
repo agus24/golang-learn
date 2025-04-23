@@ -39,6 +39,9 @@ func setupCategoryRoutes(r *gin.RouterGroup) {
 	{
 		category.GET("", categoryController.GetAllCategories)
 		category.POST("", categoryController.CreateCategory)
+		category.GET(":id", categoryController.GetCategory)
+		category.PUT(":id", categoryController.UpdateCategory)
+		category.DELETE(":id", categoryController.DeleteCategory)
 	}
 
 }

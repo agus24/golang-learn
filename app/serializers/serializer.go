@@ -4,8 +4,11 @@ import (
 	"golang_gin/app/ginapp_2/model"
 )
 
-type BaseResponse struct {
-	data any `json:"data"`
+func Pagination(page, perPage *int64) PaginationResponse {
+	return PaginationResponse{
+		Page:    *page,
+		PerPage: *perPage,
+	}
 }
 
 func User(user *model.Users) UserResponse {

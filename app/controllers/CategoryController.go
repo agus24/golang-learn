@@ -15,6 +15,10 @@ type CreateCategoryRequest struct {
 	Name string `json:"name" binding:"required"`
 }
 
+type UpdateCategoryRequest struct {
+	Name string `json:"name" binding:"required"`
+}
+
 type CategoryController struct {
 	service *services.CategoryService
 }
@@ -37,8 +41,8 @@ func (self *CategoryController) GetAllCategories(ctx *gin.Context) {
 
 	categories, err := self.service.GetAllCategories(search, *page, *perPage)
 
-	utils.Handle(ctx, func() []serializers.CategoryResponse {
-		return serializers.Categories(categories)
+	utils.Handle(ctx, func() gin.H {
+		return gin.H{"data": serializers.Categories(categories), "meta": serializers.Pagination(page, perPage)}
 	}, err, http.StatusCreated)
 }
 
@@ -51,7 +55,64 @@ func (self *CategoryController) CreateCategory(ctx *gin.Context) {
 	}
 
 	category, err := self.service.CreateCategory(input.Name)
-	utils.Handle(ctx, func() serializers.CategoryResponse {
-		return serializers.Category(category)
+	utils.Handle(ctx, func() gin.H {
+		return gin.H{"data": serializers.Category(category)}
 	}, err, http.StatusCreated)
+}
+
+func (self *CategoryController) GetCategory(ctx *gin.Context) {
+	id := utils.ParseToInt(ctx, ctx.Param("id"))
+
+	category, err := self.service.GetCategory(*id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"data": serializers.Category(category)})
+}
+
+func (self *CategoryController) UpdateCategory(ctx *gin.Context) {
+	id := utils.ParseToInt(ctx, ctx.Param("id"))
+	var input UpdateCategoryRequest
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	_, err := self.service.Repo.GetCategoryByName(input.Name, *id)
+
+	if err == nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Category name already exists"})
+		return
+	}
+
+	category, err := self.service.UpdateCategory(*id, input.Name)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"data": serializers.Category(category)})
+}
+
+func (self *CategoryController) DeleteCategory(ctx *gin.Context) {
+	id := utils.ParseToInt(ctx, ctx.Param("id"))
+
+	category, err := self.service.Repo.GetCategoryById(*id)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = self.service.DeleteCategory(category)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete category"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Category deleted successfully"})
 }

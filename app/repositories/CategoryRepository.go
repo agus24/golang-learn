@@ -59,8 +59,37 @@ func (self *CategoryRepository) GetCategoryById(id int64) (*model.Categories, er
 	return self.getSingleCategory(stmt)
 }
 
+func (self *CategoryRepository) GetCategoryByName(name string, exclude int64) (*model.Categories, error) {
+	stmt := SELECT(
+		Categories.AllColumns,
+	).FROM(Categories).
+		WHERE(Categories.Name.EQ(String(name)))
+
+	if exclude > 0 {
+		stmt = stmt.WHERE(Categories.ID.NOT_EQ(Int64(exclude)))
+	}
+
+	return self.getSingleCategory(stmt)
+}
+
 func (self *CategoryRepository) CreateCategory(name string) (sql.Result, error) {
 	stmt := Categories.INSERT(Categories.Name).VALUES(name)
 
 	return stmt.Exec(self.db)
+}
+
+func (self *CategoryRepository) UpdateCategory(id int64, name string) (sql.Result, error) {
+	stmt := Categories.UPDATE(Categories.Name).SET(name).
+		WHERE(Categories.ID.EQ(Int64(id)))
+
+	return stmt.Exec(self.db)
+}
+
+func (self *CategoryRepository) DeleteCategory(id int64) error {
+	stmt := Categories.DELETE().
+		WHERE(Categories.ID.EQ(Int64(id)))
+
+	_, err := stmt.Exec(self.db)
+
+	return err
 }
