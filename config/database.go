@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/golang-migrate/migrate"
 	"github.com/joho/godotenv"
 )
 
@@ -35,4 +36,19 @@ func generateDsn() *string {
 	)
 
 	return &dsn
+}
+
+func RunMigrations() {
+	dsn := GetDsn()
+	m, err := migrate.New(
+		"file://db/migrations",
+		"mysql://"+dsn,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
+	}
 }
