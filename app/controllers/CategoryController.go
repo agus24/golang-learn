@@ -81,6 +81,7 @@ func (self *CategoryController) UpdateCategory(ctx *gin.Context) {
 		return
 	}
 
+	// check unique name
 	_, err := self.service.Repo.GetCategoryByName(input.Name, *id)
 
 	if err == nil {
