@@ -12,11 +12,9 @@ var db *sql.DB
 
 func SetupApiRoutes(r *gin.Engine, conn *sql.DB) {
 	db = conn
-	helloController := controllers.NewHelloController()
 
 	v1 := r.Group("/api/v1")
 
-	v1.GET("/hello", helloController.Hello)
 	setupAuthRoutes(v1)
 
 	app := v1.Group("/app", middlewares.AuthMiddleware)
