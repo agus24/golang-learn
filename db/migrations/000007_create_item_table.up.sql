@@ -1,0 +1,12 @@
+CREATE TABLE items (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price INT NOT NULL,
+    sub_category_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_items_sub_categories
+        FOREIGN KEY (sub_category_id) REFERENCES sub_categories(id)
+        ON DELETE CASCADE
+);

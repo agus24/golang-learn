@@ -41,9 +41,7 @@ func (self *SubCategoryRepository) getMultiple(stmt SelectStatement) ([]SubCateg
 }
 
 func (self *SubCategoryRepository) getSingle(stmt SelectStatement) (*SubCategory, error) {
-	var results []SubCategory
-
-	err := stmt.Query(self.db, &results)
+	results, err := self.getMultiple(stmt)
 
 	if len(results) == 0 {
 		return nil, errors.New("Sub Category not found.")

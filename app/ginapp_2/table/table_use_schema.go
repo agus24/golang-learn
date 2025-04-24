@@ -11,6 +11,7 @@ package table
 // this method only once at the beginning of the program.
 func UseSchema(schema string) {
 	Categories = Categories.FromSchema(schema)
+	Items = Items.FromSchema(schema)
 	Promotions = Promotions.FromSchema(schema)
 	SchemaMigrations = SchemaMigrations.FromSchema(schema)
 	SubCategories = SubCategories.FromSchema(schema)

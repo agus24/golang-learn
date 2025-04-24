@@ -37,6 +37,7 @@ func setupAuthRoutes(r *gin.RouterGroup) {
 func setupAppRoute(r *gin.RouterGroup) {
 	categoryController := controllers.NewCategoryController(db)
 	subCategoryController := controllers.NewSubCategoryController(db)
+	itemController := controllers.NewItemController(db)
 
 	category := r.Group("/categories")
 	{
@@ -54,5 +55,14 @@ func setupAppRoute(r *gin.RouterGroup) {
 		subCategory.GET(":id", subCategoryController.GetSubCategory)
 		subCategory.PUT(":id", subCategoryController.UpdateSubCategory)
 		subCategory.DELETE(":id", subCategoryController.DeleteSubCategory)
+	}
+
+	item := r.Group("/items")
+	{
+		item.GET("", itemController.GetAll)
+		item.POST("", itemController.Create)
+		item.GET(":id", itemController.Show)
+		item.PUT(":id", itemController.Update)
+		item.DELETE(":id", itemController.Delete)
 	}
 }

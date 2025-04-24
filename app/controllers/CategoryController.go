@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"golang_gin/app/repositories"
+	"golang_gin/app/requests"
 	"golang_gin/app/serializers"
 	"golang_gin/app/services"
 	"golang_gin/utils"
@@ -10,14 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-type CreateCategoryRequest struct {
-	Name string `json:"name" binding:"required"`
-}
-
-type UpdateCategoryRequest struct {
-	Name string `json:"name" binding:"required"`
-}
 
 type CategoryController struct {
 	service *services.CategoryService
@@ -47,7 +40,7 @@ func (self *CategoryController) GetAllCategories(ctx *gin.Context) {
 }
 
 func (self *CategoryController) CreateCategory(ctx *gin.Context) {
-	var input CreateCategoryRequest
+	var input requests.CreateCategoryRequest
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
@@ -74,7 +67,7 @@ func (self *CategoryController) GetCategory(ctx *gin.Context) {
 
 func (self *CategoryController) UpdateCategory(ctx *gin.Context) {
 	id := utils.ParseToInt(ctx, ctx.Param("id"))
-	var input UpdateCategoryRequest
+	var input requests.UpdateCategoryRequest
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})

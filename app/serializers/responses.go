@@ -30,3 +30,13 @@ type SubCategoryResponse struct {
 	UpdatedAt  *time.Time        `json:"updated_at,omitempty"`
 	Category   *CategoryResponse `json:"category"`
 }
+
+type ItemResponse struct {
+	ID            int64                `json:"id"`
+	Name          string               `json:"name"`
+	Price         int32                `json:"price"`
+	SubCategoryID int64                `json:"sub_category_id"`
+	CreatedAt     *time.Time           `json:"created_at,omitempty"`
+	UpdatedAt     *time.Time           `json:"updated_at,omitempty"`
+	SubCategory   *SubCategoryResponse `json:"sub_category"`
+}

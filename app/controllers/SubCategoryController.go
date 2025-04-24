@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"golang_gin/app/repositories"
+	"golang_gin/app/requests"
 	"golang_gin/app/serializers"
 	"golang_gin/app/services"
 	"golang_gin/utils"
@@ -10,16 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-type SubCategoryCreateRequest struct {
-	Name       string `json:"name" binding:"required"`
-	CategoryID int64  `json:"category_id" binding:"required"`
-}
-
-type SubCategoryUpdateRequest struct {
-	Name       string `json:"name" binding:"required"`
-	CategoryID int64  `json:"category_id" binding:"required"`
-}
 
 type SubCategoryController struct {
 	service         *services.SubCategoryService
@@ -85,7 +76,7 @@ func (self *SubCategoryController) GetSubCategory(ctx *gin.Context) {
 }
 
 func (self *SubCategoryController) CreateSubCategory(ctx *gin.Context) {
-	var input SubCategoryCreateRequest
+	var input requests.SubCategoryCreateRequest
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ErrorResponse(err.Error()))
@@ -96,7 +87,7 @@ func (self *SubCategoryController) CreateSubCategory(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ErrorResponse("Category not found"))
 	}
 
-	subCategory, err := self.service.CreateSubCategory(input.Name, input.CategoryID)
+	subCategory, err := self.service.CreateSubCategory(input)
 
 	utils.Handle(ctx, func() gin.H {
 		return gin.H{"data": serializers.SubCategory(subCategory)}
@@ -104,7 +95,7 @@ func (self *SubCategoryController) CreateSubCategory(ctx *gin.Context) {
 }
 
 func (self *SubCategoryController) UpdateSubCategory(ctx *gin.Context) {
-	var input SubCategoryUpdateRequest
+	var input requests.SubCategoryUpdateRequest
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ErrorResponse(err.Error()))
@@ -114,7 +105,7 @@ func (self *SubCategoryController) UpdateSubCategory(ctx *gin.Context) {
 	self.checkCategoryExists(ctx, input.CategoryID)
 
 	subCategory, err := self.getByParam(ctx, ctx.Param("id"))
-	subCategory, err = self.service.UpdateSubCategory(subCategory.ID, input.Name, input.CategoryID)
+	subCategory, err = self.service.UpdateSubCategory(subCategory.ID, input)
 
 	utils.Handle(ctx, func() gin.H {
 		return gin.H{"data": serializers.SubCategory(subCategory)}

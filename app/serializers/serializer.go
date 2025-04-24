@@ -71,3 +71,30 @@ func SubCategories(subCategories []repositories.SubCategory) []SubCategoryRespon
 
 	return result
 }
+
+func Item(item *repositories.Item) ItemResponse {
+	var subCategoryResponse *SubCategoryResponse
+	if item.SubCategory != nil {
+		res := SubCategory(item.SubCategory)
+		subCategoryResponse = &res
+	}
+
+	return ItemResponse{
+		ID:            item.ID,
+		Name:          item.Name,
+		Price:         item.Price,
+		SubCategoryID: item.SubCategoryID,
+		CreatedAt:     item.CreatedAt,
+		UpdatedAt:     item.UpdatedAt,
+		SubCategory:   subCategoryResponse,
+	}
+}
+
+func Items(items []repositories.Item) []ItemResponse {
+	var result []ItemResponse
+	for _, item := range items {
+		result = append(result, Item(&item))
+	}
+
+	return result
+}

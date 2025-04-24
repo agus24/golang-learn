@@ -2,6 +2,7 @@ package services
 
 import (
 	"golang_gin/app/repositories"
+	"golang_gin/app/requests"
 )
 
 type SubCategoryService struct {
@@ -20,12 +21,12 @@ func (self *SubCategoryService) GetSubCategoryById(id int64) (*repositories.SubC
 	return self.Repo.GetSubCategoryById(id)
 }
 
-func (self *SubCategoryService) CreateSubCategory(name string, categoryId int64) (*repositories.SubCategory, error) {
-	return self.Repo.CreateSubCategory(name, categoryId)
+func (self *SubCategoryService) CreateSubCategory(body requests.SubCategoryCreateRequest) (*repositories.SubCategory, error) {
+	return self.Repo.CreateSubCategory(body.Name, body.CategoryID)
 }
 
-func (self *SubCategoryService) UpdateSubCategory(id int64, name string, categoryID int64) (*repositories.SubCategory, error) {
-	_, err := self.Repo.UpdateSubCategory(id, name, categoryID)
+func (self *SubCategoryService) UpdateSubCategory(id int64, body requests.SubCategoryUpdateRequest) (*repositories.SubCategory, error) {
+	_, err := self.Repo.UpdateSubCategory(id, body.Name, body.CategoryID)
 
 	if err != nil {
 		return nil, err
