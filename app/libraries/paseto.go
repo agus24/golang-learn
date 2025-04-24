@@ -16,7 +16,7 @@ type PasetoToken struct {
 }
 
 func NewPasetoToken() *PasetoToken {
-	expiration := time.Hour * 24
+	expiration := config.PasetoExpirationTime
 	return &PasetoToken{
 		paseto:     paseto.NewV2(),
 		symmetric:  []byte(config.PasetoSecret),

@@ -2,12 +2,19 @@ package serializers
 
 import (
 	"golang_gin/app/ginapp_2/model"
+	"golang_gin/app/repositories"
 )
 
 func Pagination(page, perPage *int64) PaginationResponse {
 	return PaginationResponse{
 		Page:    *page,
 		PerPage: *perPage,
+	}
+}
+
+func ErrorResponse(message string) map[string]string {
+	return map[string]string{
+		"message": message,
 	}
 }
 
@@ -34,6 +41,32 @@ func Categories(categories []model.Categories) []CategoryResponse {
 	var result []CategoryResponse
 	for _, category := range categories {
 		result = append(result, Category(&category))
+	}
+
+	return result
+}
+
+func SubCategory(subCategory *repositories.SubCategory) SubCategoryResponse {
+	var categoryResponse *CategoryResponse
+	if subCategory.Category != nil {
+		res := Category(subCategory.Category)
+		categoryResponse = &res
+	}
+
+	return SubCategoryResponse{
+		ID:         subCategory.ID,
+		Name:       subCategory.Name,
+		CategoryID: subCategory.CategoryID,
+		CreatedAt:  subCategory.CreatedAt,
+		UpdatedAt:  subCategory.UpdatedAt,
+		Category:   categoryResponse,
+	}
+}
+
+func SubCategories(subCategories []repositories.SubCategory) []SubCategoryResponse {
+	var result []SubCategoryResponse
+	for _, subCategory := range subCategories {
+		result = append(result, SubCategory(&subCategory))
 	}
 
 	return result

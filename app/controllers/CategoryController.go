@@ -43,7 +43,7 @@ func (self *CategoryController) GetAllCategories(ctx *gin.Context) {
 
 	utils.Handle(ctx, func() gin.H {
 		return gin.H{"data": serializers.Categories(categories), "meta": serializers.Pagination(page, perPage)}
-	}, err, http.StatusCreated)
+	}, err, http.StatusOK)
 }
 
 func (self *CategoryController) CreateCategory(ctx *gin.Context) {
@@ -57,7 +57,7 @@ func (self *CategoryController) CreateCategory(ctx *gin.Context) {
 	category, err := self.service.CreateCategory(input.Name)
 	utils.Handle(ctx, func() gin.H {
 		return gin.H{"data": serializers.Category(category)}
-	}, err, http.StatusCreated)
+	}, err, http.StatusOK)
 }
 
 func (self *CategoryController) GetCategory(ctx *gin.Context) {

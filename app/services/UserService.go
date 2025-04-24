@@ -19,9 +19,7 @@ type LoginResult struct {
 }
 
 func NewUserService(userRepository *repositories.UserRepository) *UserService {
-	return &UserService{
-		userRepository,
-	}
+	return &UserService{userRepository}
 }
 
 func (self UserService) LoginUser(username string, password string) (LoginResult, error) {

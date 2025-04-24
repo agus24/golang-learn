@@ -22,6 +22,7 @@ type promotionsTable struct {
 	Name               mysql.ColumnString
 	DiscountPercentage mysql.ColumnFloat
 	DiscountAmount     mysql.ColumnInteger
+	Status             mysql.ColumnInteger // 0: inactive, 1: active
 	CreatedAt          mysql.ColumnTimestamp
 	UpdatedAt          mysql.ColumnTimestamp
 
@@ -70,11 +71,12 @@ func newPromotionsTableImpl(schemaName, tableName, alias string) promotionsTable
 		NameColumn               = mysql.StringColumn("name")
 		DiscountPercentageColumn = mysql.FloatColumn("discount_percentage")
 		DiscountAmountColumn     = mysql.IntegerColumn("discount_amount")
+		StatusColumn             = mysql.IntegerColumn("status")
 		CreatedAtColumn          = mysql.TimestampColumn("created_at")
 		UpdatedAtColumn          = mysql.TimestampColumn("updated_at")
-		allColumns               = mysql.ColumnList{IDColumn, CodeColumn, NameColumn, DiscountPercentageColumn, DiscountAmountColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns           = mysql.ColumnList{CodeColumn, NameColumn, DiscountPercentageColumn, DiscountAmountColumn, CreatedAtColumn, UpdatedAtColumn}
-		defaultColumns           = mysql.ColumnList{CreatedAtColumn, UpdatedAtColumn}
+		allColumns               = mysql.ColumnList{IDColumn, CodeColumn, NameColumn, DiscountPercentageColumn, DiscountAmountColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns           = mysql.ColumnList{CodeColumn, NameColumn, DiscountPercentageColumn, DiscountAmountColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		defaultColumns           = mysql.ColumnList{StatusColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return promotionsTable{
@@ -86,6 +88,7 @@ func newPromotionsTableImpl(schemaName, tableName, alias string) promotionsTable
 		Name:               NameColumn,
 		DiscountPercentage: DiscountPercentageColumn,
 		DiscountAmount:     DiscountAmountColumn,
+		Status:             StatusColumn,
 		CreatedAt:          CreatedAtColumn,
 		UpdatedAt:          UpdatedAtColumn,
 

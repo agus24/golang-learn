@@ -18,7 +18,9 @@ func SetupApiRoutes(r *gin.Engine, conn *sql.DB) {
 
 	v1.GET("/hello", helloController.Hello)
 	setupAuthRoutes(v1)
-	setupCategoryRoutes(v1)
+
+	app := v1.Group("/app", middlewares.AuthMiddleware)
+	setupAppRoute(app)
 }
 
 func setupAuthRoutes(r *gin.RouterGroup) {
@@ -32,10 +34,11 @@ func setupAuthRoutes(r *gin.RouterGroup) {
 	auth.POST("/user", middlewares.AuthMiddleware, userController.CreateUser)
 }
 
-func setupCategoryRoutes(r *gin.RouterGroup) {
+func setupAppRoute(r *gin.RouterGroup) {
 	categoryController := controllers.NewCategoryController(db)
+	subCategoryController := controllers.NewSubCategoryController(db)
 
-	category := r.Group("/categories", middlewares.AuthMiddleware)
+	category := r.Group("/categories")
 	{
 		category.GET("", categoryController.GetAllCategories)
 		category.POST("", categoryController.CreateCategory)
@@ -44,4 +47,12 @@ func setupCategoryRoutes(r *gin.RouterGroup) {
 		category.DELETE(":id", categoryController.DeleteCategory)
 	}
 
+	subCategory := r.Group("/sub-categories")
+	{
+		subCategory.GET("", subCategoryController.GetAllSubCategories)
+		subCategory.POST("", subCategoryController.CreateSubCategory)
+		subCategory.GET(":id", subCategoryController.GetSubCategory)
+		subCategory.PUT(":id", subCategoryController.UpdateSubCategory)
+		subCategory.DELETE(":id", subCategoryController.DeleteSubCategory)
+	}
 }

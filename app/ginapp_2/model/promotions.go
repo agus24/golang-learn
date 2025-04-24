@@ -17,6 +17,7 @@ type Promotions struct {
 	Name               string
 	DiscountPercentage *float64
 	DiscountAmount     *int32
+	Status             uint8 // 0: inactive, 1: active
 	CreatedAt          *time.Time
 	UpdatedAt          *time.Time
 }
