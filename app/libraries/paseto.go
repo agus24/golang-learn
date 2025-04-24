@@ -1,6 +1,7 @@
 package libraries
 
 import (
+	"errors"
 	"golang_gin/config"
 
 	"strconv"
@@ -62,7 +63,7 @@ func (p *PasetoToken) ParseToken(token string) (*paseto.JSONToken, error) {
 	}
 
 	if time.Now().After(claims.Expiration) {
-		return nil, err
+		return nil, errors.New("Token expired")
 	}
 
 	return &claims, nil
