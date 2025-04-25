@@ -30,7 +30,7 @@ func (self *ItemController) getByparam(ctx *gin.Context, idParam string) (*repos
 	item, err := self.service.GetById(*id)
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ErrorResponse("Item not found"))
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ErrorResponse(err.Error()))
 		return nil, err
 	}
 
@@ -67,11 +67,9 @@ func (self *ItemController) GetAll(ctx *gin.Context) {
 }
 
 func (self *ItemController) Show(ctx *gin.Context) {
-	item, err := self.getByparam(ctx, ctx.Param("id"))
+	item, _ := self.getByparam(ctx, ctx.Param("id"))
 
-	utils.Handle(ctx, func() gin.H {
-		return gin.H{"data": serializers.Item(item)}
-	}, err, http.StatusOK)
+	ctx.JSON(http.StatusOK, gin.H{"data": serializers.Item(item)})
 }
 
 func (self *ItemController) Create(ctx *gin.Context) {
@@ -82,9 +80,7 @@ func (self *ItemController) Create(ctx *gin.Context) {
 		return
 	}
 
-	if !self.checkSubCategoryExists(ctx, request.SubCategoryID) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ErrorResponse("Category not found"))
-	}
+	self.checkSubCategoryExists(ctx, request.SubCategoryID)
 
 	item, err := self.service.Create(request)
 
@@ -103,6 +99,7 @@ func (self *ItemController) Update(ctx *gin.Context) {
 
 	if !self.checkSubCategoryExists(ctx, request.SubCategoryID) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ErrorResponse("Category not found"))
+		return
 	}
 
 	item, err := self.getByparam(ctx, ctx.Param("id"))

@@ -11,8 +11,8 @@ import (
 var PasetoSecret string
 var PasetoExpirationTime time.Duration
 
-func InitEnv() {
-	_ = godotenv.Load()
+func InitEnv(envFile string) {
+	_ = godotenv.Load(envFile)
 
 	parsePasetoSecret()
 	parsePasetoExpirationTime()

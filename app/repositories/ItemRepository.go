@@ -36,7 +36,7 @@ func (self *ItemRepository) getSingle(stmt SelectStatement) (*Item, error) {
 	results, err := self.getMultiple(stmt)
 
 	if len(results) == 0 {
-		return nil, errors.New("Sub Category not found.")
+		return nil, errors.New("Item not found.")
 	}
 
 	return &results[0], err
@@ -48,7 +48,7 @@ func (self *ItemRepository) getDefaultQuery() SelectStatement {
 		SubCategories.AllColumns,
 		Categories.AllColumns,
 	).FROM(Items.
-		INNER_JOIN(SubCategories, Items.ID.EQ(SubCategories.ID)).
+		INNER_JOIN(SubCategories, Items.SubCategoryID.EQ(SubCategories.ID)).
 		INNER_JOIN(Categories, SubCategories.CategoryID.EQ(Categories.ID)),
 	)
 }
