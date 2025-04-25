@@ -29,6 +29,7 @@ func (self UserService) LoginUser(username string, password string) (LoginResult
 		return LoginResult{nil, nil}, err
 	}
 
+	println(utils.HashCheck(password, user.Password))
 	if !utils.HashCheck(password, user.Password) {
 		return LoginResult{nil, nil}, errors.New("Invalid password")
 	}

@@ -5,8 +5,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"golang_gin/app/databases/model"
+	"golang_gin/app/libraries"
 	"golang_gin/config"
 	"golang_gin/routes"
+	"golang_gin/tests/seeders"
 	"io"
 	"log"
 	"net/http"
@@ -17,6 +20,8 @@ import (
 
 var Engine *gin.Engine
 var Conn *sql.DB
+
+var User *model.Users
 
 func CreateApplication() {
 	config.InitEnv("../.env.test")
@@ -42,6 +47,16 @@ func GetTestServer() (*httptest.Server, *sql.DB) {
 	}
 
 	return httptest.NewServer(Engine), Conn
+}
+
+func GetToken(user *model.Users) string {
+	token, err := libraries.NewPasetoToken().GenerateToken(user.ID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return token
 }
 
 func ParseRequestBody(resp *http.Response) (map[string]any, error) {
@@ -111,4 +126,17 @@ func ResetDB(db *sql.DB) {
 
 	// Re-enable foreign key checks
 	db.Exec("SET FOREIGN_KEY_CHECKS = 1")
+}
+
+func Authenticate(req *http.Request) *http.Request {
+	if User == nil {
+		User = seeders.SeedUser(Conn, "user1", "password", "user 1")
+	}
+
+	generatedToken := GetToken(User)
+
+	req.Header.Set("Authorization", "Bearer "+generatedToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	return req
 }
