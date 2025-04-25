@@ -11,6 +11,12 @@ import (
 var PasetoSecret string
 var PasetoExpirationTime time.Duration
 
+var DbUser string
+var DbPass string
+var DbHost string
+var DbPort string
+var DbName string
+
 func InitEnv(envFile string) {
 	err := godotenv.Load(envFile)
 
@@ -18,6 +24,7 @@ func InitEnv(envFile string) {
 		log.Fatal("Error loading .env file: " + envFile + " " + err.Error())
 	}
 
+	parseDatabase()
 	parsePasetoSecret()
 	parsePasetoExpirationTime()
 }
@@ -38,4 +45,12 @@ func parsePasetoExpirationTime() {
 	if err != nil {
 		log.Fatal("PASETO_EXPIRATION_TIME must be a valid duration")
 	}
+}
+
+func parseDatabase() {
+	DbUser = os.Getenv("DB_USER")
+	DbPass = os.Getenv("DB_PASS")
+	DbHost = os.Getenv("DB_HOST")
+	DbPort = os.Getenv("DB_PORT")
+	DbName = os.Getenv("DB_NAME")
 }

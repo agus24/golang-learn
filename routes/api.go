@@ -8,22 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var db *sql.DB
-
 func SetupApiRoutes(r *gin.Engine, conn *sql.DB) *gin.RouterGroup {
-	db = conn
-
 	v1 := r.Group("/api/v1")
 
-	setupAuthRoutes(v1)
+	setupAuthRoutes(v1, conn)
 
 	app := v1.Group("/app", middlewares.AuthMiddleware)
-	setupAppRoute(app)
+	setupAppRoute(app, conn)
 
 	return v1
 }
 
-func setupAuthRoutes(r *gin.RouterGroup) {
+func setupAuthRoutes(r *gin.RouterGroup, db *sql.DB) {
 	authController := controllers.NewAuthController(db)
 	userController := controllers.NewUserController(db)
 
@@ -34,7 +30,7 @@ func setupAuthRoutes(r *gin.RouterGroup) {
 	auth.POST("/user", middlewares.AuthMiddleware, userController.CreateUser)
 }
 
-func setupAppRoute(r *gin.RouterGroup) {
+func setupAppRoute(r *gin.RouterGroup, db *sql.DB) {
 	categoryController := controllers.NewCategoryController(db)
 	subCategoryController := controllers.NewSubCategoryController(db)
 	itemController := controllers.NewItemController(db)

@@ -24,11 +24,11 @@ func generateDsn() *string {
 	format := "%s:%s@tcp(%s:%s)/%s"
 
 	dsn := fmt.Sprintf(format,
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASS"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"),
+		DbUser,
+		DbPass,
+		DbHost,
+		DbPort,
+		DbName,
 	)
 
 	return &dsn

@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"golang_gin/config"
 	"golang_gin/routes"
-	"golang_gin/utils"
 	"io"
 	"log"
 	"net/http"
@@ -23,8 +22,6 @@ func CreateApplication() {
 	config.RunMigrations()
 
 	conn, err := sql.Open("mysql", config.GetDsn())
-
-	utils.Dump(conn, true)
 
 	if err != nil {
 		log.Fatal(err)
