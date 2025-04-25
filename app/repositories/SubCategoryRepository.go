@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"errors"
 
-	. "github.com/go-jet/jet/v2/mysql"
 	"golang_gin/app/ginapp_2/model"
 	. "golang_gin/app/ginapp_2/table"
+	"golang_gin/utils"
+
+	. "github.com/go-jet/jet/v2/mysql"
 )
 
 type SubCategory struct {
@@ -83,6 +85,7 @@ func (self *SubCategoryRepository) GetSubCategoryByName(name string) (*SubCatego
 }
 
 func (self *SubCategoryRepository) CreateSubCategory(name string, categoryID int64) (*SubCategory, error) {
+	utils.StartTransaction(self.db)
 	stmt := SubCategories.INSERT(SubCategories.Name, SubCategories.CategoryID).
 		VALUES(name, categoryID)
 
@@ -102,6 +105,7 @@ func (self *SubCategoryRepository) CreateSubCategory(name string, categoryID int
 }
 
 func (self *SubCategoryRepository) UpdateSubCategory(id int64, name string, categoryID int64) (sql.Result, error) {
+	utils.StartTransaction(self.db)
 	stmt := SubCategories.UPDATE(
 		SubCategories.Name,
 		SubCategories.CategoryID,
@@ -111,6 +115,7 @@ func (self *SubCategoryRepository) UpdateSubCategory(id int64, name string, cate
 }
 
 func (self *SubCategoryRepository) DeleteSubCategory(id int64) error {
+	utils.StartTransaction(self.db)
 	stmt := SubCategories.DELETE().
 		WHERE(SubCategories.ID.EQ(Int64(id)))
 

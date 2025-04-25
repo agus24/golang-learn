@@ -6,6 +6,7 @@ import (
 
 	"golang_gin/app/ginapp_2/model"
 	. "golang_gin/app/ginapp_2/table"
+	"golang_gin/utils"
 
 	. "github.com/go-jet/jet/v2/mysql"
 )
@@ -78,6 +79,7 @@ func (self *ItemRepository) GetById(id int64) (*Item, error) {
 }
 
 func (self *ItemRepository) Create(name string, price int, subCategoryId int64) (*Item, error) {
+	utils.StartTransaction(self.db)
 	stmt := Items.INSERT(Items.Name, Items.Price, Items.SubCategoryID).VALUES(name, price, subCategoryId)
 
 	result, err := stmt.Exec(self.db)
@@ -96,6 +98,7 @@ func (self *ItemRepository) Create(name string, price int, subCategoryId int64) 
 }
 
 func (self *ItemRepository) Update(id int64, name string, price int, subCategoryId int64) (*Item, error) {
+	utils.StartTransaction(self.db)
 	stmt := Items.UPDATE(Items.Name, Items.Price, Items.SubCategoryID).SET(name, price, subCategoryId).WHERE(Items.ID.EQ(Int64(id)))
 
 	_, err := stmt.Exec(self.db)
@@ -108,6 +111,7 @@ func (self *ItemRepository) Update(id int64, name string, price int, subCategory
 }
 
 func (self *ItemRepository) Delete(id int64) error {
+	utils.StartTransaction(self.db)
 	stmt := Items.DELETE().WHERE(Items.ID.EQ(Int64(id)))
 
 	_, err := stmt.Exec(self.db)

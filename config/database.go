@@ -5,8 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
-
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -23,11 +21,6 @@ func GetDsn() string {
 }
 
 func generateDsn() *string {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	format := "%s:%s@tcp(%s:%s)/%s"
 
 	dsn := fmt.Sprintf(format,
@@ -44,7 +37,7 @@ func generateDsn() *string {
 func RunMigrations() {
 	dsn := GetDsn()
 	m, err := migrate.New(
-		"file://db/migrations",
+		"file://"+os.Getenv("DB_MIGRATION_PATH"),
 		"mysql://"+dsn,
 	)
 	if err != nil {

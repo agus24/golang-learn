@@ -10,7 +10,7 @@ import (
 
 var db *sql.DB
 
-func SetupApiRoutes(r *gin.Engine, conn *sql.DB) {
+func SetupApiRoutes(r *gin.Engine, conn *sql.DB) *gin.RouterGroup {
 	db = conn
 
 	v1 := r.Group("/api/v1")
@@ -19,6 +19,8 @@ func SetupApiRoutes(r *gin.Engine, conn *sql.DB) {
 
 	app := v1.Group("/app", middlewares.AuthMiddleware)
 	setupAppRoute(app)
+
+	return v1
 }
 
 func setupAuthRoutes(r *gin.RouterGroup) {

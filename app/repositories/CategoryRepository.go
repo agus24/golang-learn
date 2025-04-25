@@ -3,9 +3,11 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	. "github.com/go-jet/jet/v2/mysql"
 	"golang_gin/app/ginapp_2/model"
 	. "golang_gin/app/ginapp_2/table"
+	"golang_gin/utils"
+
+	. "github.com/go-jet/jet/v2/mysql"
 )
 
 type CategoryRepository struct {
@@ -73,12 +75,14 @@ func (self *CategoryRepository) GetCategoryByName(name string, exclude int64) (*
 }
 
 func (self *CategoryRepository) CreateCategory(name string) (sql.Result, error) {
+	utils.StartTransaction(self.db)
 	stmt := Categories.INSERT(Categories.Name).VALUES(name)
 
 	return stmt.Exec(self.db)
 }
 
 func (self *CategoryRepository) UpdateCategory(id int64, name string) (sql.Result, error) {
+	utils.StartTransaction(self.db)
 	stmt := Categories.UPDATE(Categories.Name).SET(name).
 		WHERE(Categories.ID.EQ(Int64(id)))
 
@@ -86,6 +90,7 @@ func (self *CategoryRepository) UpdateCategory(id int64, name string) (sql.Resul
 }
 
 func (self *CategoryRepository) DeleteCategory(id int64) error {
+	utils.StartTransaction(self.db)
 	stmt := Categories.DELETE().
 		WHERE(Categories.ID.EQ(Int64(id)))
 

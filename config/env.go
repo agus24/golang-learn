@@ -12,7 +12,11 @@ var PasetoSecret string
 var PasetoExpirationTime time.Duration
 
 func InitEnv(envFile string) {
-	_ = godotenv.Load(envFile)
+	err := godotenv.Load(envFile)
+
+	if err != nil {
+		log.Fatal("Error loading .env file: " + envFile + " " + err.Error())
+	}
 
 	parsePasetoSecret()
 	parsePasetoExpirationTime()

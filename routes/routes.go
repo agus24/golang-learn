@@ -7,15 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Route struct {
-	port string
+type Route struct{}
+
+func NewRoute() *Route {
+	return &Route{}
 }
 
-func NewRoute(port string) *Route {
-	return &Route{port}
-}
-
-func (route *Route) SetupRoutes(conn *sql.DB) {
+func (route *Route) SetupRoutes(conn *sql.DB) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(gin.Recovery())
@@ -23,7 +21,11 @@ func (route *Route) SetupRoutes(conn *sql.DB) {
 	r.Use(middlewares.CorsMiddleware())
 	// r.Use(middlewares.RateLimiterMiddleware())
 
+	r.GET("/__health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "OK"})
+	})
+
 	SetupApiRoutes(r, conn)
 
-	r.Run(":" + route.port)
+	return r
 }

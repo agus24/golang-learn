@@ -8,9 +8,6 @@ import (
 	"os"
 )
 
-var conn sql.DB
-var PasetoSecret string
-
 func main() {
 	config.InitEnv(".env")
 	config.InitConfig()
@@ -23,7 +20,13 @@ func main() {
 
 	config.RunMigrations()
 
-	Route := NewRoute(os.Getenv("APP_PORT"))
+	route := NewRoute()
 
-	Route.SetupRoutes(conn)
+	router := *route.SetupRoutes(conn)
+
+	routerErr := router.Run(":" + os.Getenv("APP_PORT"))
+
+	if routerErr != nil {
+		log.Fatal(routerErr)
+	}
 }

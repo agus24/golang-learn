@@ -3,11 +3,13 @@ package utils
 import (
 	"errors"
 	"golang_gin/config"
+	"log"
 	"net/http"
 	"runtime/debug"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gookit/goutil/dump"
 )
 
 func ParsePageAndPerPage(pageQuery string, perPageQuery string) (*int64, *int64, error) {
@@ -58,4 +60,11 @@ func Handle[T any](c *gin.Context, dataFunc func() T, err error, status int) {
 	}
 
 	c.JSON(status, dataFunc())
+}
+
+func Dump(data any, isFatal bool) {
+	dump.P(data)
+	if isFatal {
+		log.Fatal("FATAL because dump")
+	}
 }

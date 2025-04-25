@@ -7,8 +7,10 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-jet/jet/v2 v2.13.0
 	github.com/golang-migrate/migrate/v4 v4.18.2
+	github.com/gookit/goutil v0.6.18
 	github.com/joho/godotenv v1.5.1
 	github.com/o1egl/paseto v1.0.0
+	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.37.0
 )
 
@@ -29,6 +31,7 @@ require (
 	github.com/go-sql-driver/mysql v1.9.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/gookit/color v1.5.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -40,9 +43,9 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/arch v0.16.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
