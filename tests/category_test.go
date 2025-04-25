@@ -5,7 +5,7 @@ import (
 )
 
 func TestCategoryIndex(test *testing.T) {
-	testServer := GetTestServer()
+	testServer, _ := GetTestServer()
 	defer testServer.Close()
 
 	// test.Run("It should return categories", func(test *testing.T) {

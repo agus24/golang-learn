@@ -3,7 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"golang_gin/app/databases/model"
 	. "golang_gin/app/databases/table"
 	"golang_gin/utils"

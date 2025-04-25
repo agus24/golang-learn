@@ -2,7 +2,6 @@ package tests
 
 import (
 	"fmt"
-	"golang_gin/utils"
 	"net/http"
 	"testing"
 
@@ -10,10 +9,11 @@ import (
 )
 
 func TestLogin(test *testing.T) {
-	testServer := GetTestServer()
+	testServer, db := GetTestServer()
 	defer testServer.Close()
 
 	test.Run("It should return validation error", func(test *testing.T) {
+		ResetDB(db)
 		resp, err := http.Post(fmt.Sprintf("%s/api/v1/auth/login", testServer.URL), "application/json", nil)
 
 		if err != nil {
@@ -31,6 +31,7 @@ func TestLogin(test *testing.T) {
 	})
 
 	test.Run("It should return wrong username", func(test *testing.T) {
+		ResetDB(db)
 		loginBody, err := PrepareBody(map[string]any{
 			"username": "test",
 			"password": "test",
@@ -48,9 +49,7 @@ func TestLogin(test *testing.T) {
 			test.Fatalf("Expected no error, got %v", err)
 		}
 
-		utils.Dump(data, true)
-
 		assert.Equal(test, 400, resp.StatusCode)
-		assert.Equal(test, data["error"], "Invalid request")
+		assert.Equal(test, data["error"], "Invalid credentials")
 	})
 }

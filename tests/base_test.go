@@ -9,7 +9,7 @@ import (
 )
 
 func TestHealthCheck(test *testing.T) {
-	testServer := GetTestServer()
+	testServer, _ := GetTestServer()
 	defer testServer.Close()
 
 	test.Run("Addition", func(test *testing.T) {
