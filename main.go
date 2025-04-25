@@ -12,7 +12,7 @@ func main() {
 	config.InitEnv(".env")
 	config.InitConfig()
 
-	conn, err := sql.Open("mysql", config.GetDsn())
+	conn, err := sql.Open("mysql", *config.GenerateDsn())
 
 	if err != nil {
 		log.Fatal(err)

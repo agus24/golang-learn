@@ -48,7 +48,6 @@ func TestLogin(test *testing.T) {
 			test.Fatalf("Expected no error, got %v", err)
 		}
 
-		fmt.Println(data)
 		utils.Dump(data, true)
 
 		assert.Equal(test, 400, resp.StatusCode)

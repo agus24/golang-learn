@@ -11,7 +11,7 @@ import (
 	"github.com/go-jet/jet/v2/mysql"
 )
 
-var Promotions = newPromotionsTable("ginapp_2", "promotions", "")
+var Promotions = newPromotionsTable("", "promotions", "")
 
 type promotionsTable struct {
 	mysql.Table

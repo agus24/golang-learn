@@ -10,17 +10,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-var dsn *string
-
-func GetDsn() string {
-	if dsn == nil {
-		dsn = generateDsn()
-	}
-
-	return *dsn
-}
-
-func generateDsn() *string {
+func GenerateDsn() *string {
 	format := "%s:%s@tcp(%s:%s)/%s"
 
 	dsn := fmt.Sprintf(format,
@@ -35,7 +25,7 @@ func generateDsn() *string {
 }
 
 func RunMigrations() {
-	dsn := GetDsn()
+	dsn := *GenerateDsn()
 	m, err := migrate.New(
 		"file://"+os.Getenv("DB_MIGRATION_PATH"),
 		"mysql://"+dsn,

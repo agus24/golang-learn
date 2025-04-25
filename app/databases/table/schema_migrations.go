@@ -11,7 +11,7 @@ import (
 	"github.com/go-jet/jet/v2/mysql"
 )
 
-var SchemaMigrations = newSchemaMigrationsTable("ginapp_2", "schema_migrations", "")
+var SchemaMigrations = newSchemaMigrationsTable("", "schema_migrations", "")
 
 type schemaMigrationsTable struct {
 	mysql.Table

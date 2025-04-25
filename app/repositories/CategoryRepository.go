@@ -3,8 +3,8 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	"golang_gin/app/ginapp_2/model"
-	. "golang_gin/app/ginapp_2/table"
+	"golang_gin/app/databases/model"
+	. "golang_gin/app/databases/table"
 	"golang_gin/utils"
 
 	. "github.com/go-jet/jet/v2/mysql"

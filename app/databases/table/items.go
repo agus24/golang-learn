@@ -11,7 +11,7 @@ import (
 	"github.com/go-jet/jet/v2/mysql"
 )
 
-var Items = newItemsTable("ginapp_2", "items", "")
+var Items = newItemsTable("", "items", "")
 
 type itemsTable struct {
 	mysql.Table

@@ -11,7 +11,7 @@ import (
 	"github.com/go-jet/jet/v2/mysql"
 )
 
-var SubCategories = newSubCategoriesTable("ginapp_2", "sub_categories", "")
+var SubCategories = newSubCategoriesTable("", "sub_categories", "")
 
 type subCategoriesTable struct {
 	mysql.Table

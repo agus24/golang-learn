@@ -1,7 +1,7 @@
 package serializers
 
 import (
-	"golang_gin/app/ginapp_2/model"
+	"golang_gin/app/databases/model"
 	"golang_gin/app/repositories"
 )
 

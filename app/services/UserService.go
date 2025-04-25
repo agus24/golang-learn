@@ -2,7 +2,7 @@ package services
 
 import (
 	"errors"
-	"golang_gin/app/ginapp_2/model"
+	"golang_gin/app/databases/model"
 	. "golang_gin/app/libraries"
 	"golang_gin/app/repositories"
 	"golang_gin/app/requests"

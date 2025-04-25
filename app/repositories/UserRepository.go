@@ -3,8 +3,9 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	"golang_gin/app/ginapp_2/model"
-	. "golang_gin/app/ginapp_2/table"
+	"fmt"
+	"golang_gin/app/databases/model"
+	. "golang_gin/app/databases/table"
 	"golang_gin/utils"
 
 	. "github.com/go-jet/jet/v2/mysql"
@@ -34,6 +35,15 @@ func (self *UserRepository) getSingleUser(stmt SelectStatement) (*model.Users, e
 	if len(results) == 0 {
 		return nil, errors.New("User not found")
 	}
+
+	fmt.Println("🔍 Jet SQL:", stmt.DebugSql())
+
+	self.db.Exec("DELETE FROM users")
+	self.db.Exec("INSERT INTO users (username, name, password) VALUES (?, ?, ?)", "test123", "asdfasdf", "asdfasdf")
+
+	var dbName string
+	_ = self.db.QueryRow("SELECT DATABASE()").Scan(&dbName)
+	fmt.Println("🧪 ACTUAL CONNECTED DB:", dbName)
 
 	return &results[0], err
 }

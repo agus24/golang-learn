@@ -21,7 +21,7 @@ func CreateApplication() {
 	config.InitConfig()
 	config.RunMigrations()
 
-	conn, err := sql.Open("mysql", config.GetDsn())
+	conn, err := sql.Open("mysql", *config.GenerateDsn())
 
 	if err != nil {
 		log.Fatal(err)
