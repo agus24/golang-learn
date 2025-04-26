@@ -1,10 +1,9 @@
 package tests
 
 import (
-	"fmt"
+	"golang_gin/tests/helpers"
 	"golang_gin/tests/seeders"
 	"golang_gin/utils"
-	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,14 +16,14 @@ func TestCategoryIndex(test *testing.T) {
 	test.Run("It should return categories", func(test *testing.T) {
 		ResetDB(db)
 
+		user := seeders.SeedUser(db, "user1", "password", "user 1")
+
+		builder := helpers.NewHttpRequestBuilder(testServer.URL).
+			SetToken(GetToken(user))
+
 		category := seeders.SeedCategory(db, "Category 1")
-		req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/v1/app/categories", testServer.URL), nil)
 
-		if err != nil {
-			test.Fatalf("Expected no error, got %v", err)
-		}
-
-		resp, _ := http.DefaultClient.Do(Authenticate(req))
+		resp, _ := builder.BuildAndRun("GET", "/api/v1/app/categories", nil)
 		data, err := ParseRequestBody(resp)
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
