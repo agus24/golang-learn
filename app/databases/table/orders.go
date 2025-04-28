@@ -18,9 +18,9 @@ type ordersTable struct {
 
 	// Columns
 	ID           mysql.ColumnInteger
-	Date         mysql.ColumnTimestamp
+	Date         mysql.ColumnDate
 	OrderNumber  mysql.ColumnString
-	GrandTotal   mysql.ColumnFloat
+	GrandTotal   mysql.ColumnInteger
 	CustomerName mysql.ColumnString
 	CreatedAt    mysql.ColumnTimestamp
 	UpdatedAt    mysql.ColumnTimestamp
@@ -66,15 +66,15 @@ func newOrdersTable(schemaName, tableName, alias string) *OrdersTable {
 func newOrdersTableImpl(schemaName, tableName, alias string) ordersTable {
 	var (
 		IDColumn           = mysql.IntegerColumn("id")
-		DateColumn         = mysql.TimestampColumn("date")
+		DateColumn         = mysql.DateColumn("date")
 		OrderNumberColumn  = mysql.StringColumn("order_number")
-		GrandTotalColumn   = mysql.FloatColumn("grand_total")
+		GrandTotalColumn   = mysql.IntegerColumn("grand_total")
 		CustomerNameColumn = mysql.StringColumn("customer_name")
 		CreatedAtColumn    = mysql.TimestampColumn("created_at")
 		UpdatedAtColumn    = mysql.TimestampColumn("updated_at")
 		allColumns         = mysql.ColumnList{IDColumn, DateColumn, OrderNumberColumn, GrandTotalColumn, CustomerNameColumn, CreatedAtColumn, UpdatedAtColumn}
 		mutableColumns     = mysql.ColumnList{DateColumn, OrderNumberColumn, GrandTotalColumn, CustomerNameColumn, CreatedAtColumn, UpdatedAtColumn}
-		defaultColumns     = mysql.ColumnList{DateColumn, CreatedAtColumn, UpdatedAtColumn}
+		defaultColumns     = mysql.ColumnList{CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return ordersTable{

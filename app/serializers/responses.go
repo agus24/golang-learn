@@ -40,3 +40,13 @@ type ItemResponse struct {
 	UpdatedAt     *time.Time           `json:"updated_at,omitempty"`
 	SubCategory   *SubCategoryResponse `json:"sub_category"`
 }
+
+type OrderResponse struct {
+	ID           int64      `json:"id"`
+	Date         time.Time  `json:"date"`
+	OrderNumber  string     `json:"order_number"`
+	GrandTotal   int32      `json:"grand_total"`
+	CustomerName string     `json:"customer_name"`
+	CreatedAt    *time.Time `json:"created_at,omitempty"`
+	UpdatedAt    *time.Time `json:"updated_at,omitempty"`
+}

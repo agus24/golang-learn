@@ -13,9 +13,9 @@ import (
 
 type Orders struct {
 	ID           int64 `sql:"primary_key"`
-	Date         *time.Time
+	Date         time.Time
 	OrderNumber  string
-	GrandTotal   float64
+	GrandTotal   int32
 	CustomerName string
 	CreatedAt    *time.Time
 	UpdatedAt    *time.Time

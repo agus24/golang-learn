@@ -110,3 +110,28 @@ func Items(items []repositories.Item) []ItemResponse {
 
 	return result
 }
+
+func Order(order *model.Orders) OrderResponse {
+	return OrderResponse{
+		ID:           order.ID,
+		Date:         order.Date,
+		OrderNumber:  order.OrderNumber,
+		GrandTotal:   order.GrandTotal,
+		CustomerName: order.CustomerName,
+		CreatedAt:    order.CreatedAt,
+		UpdatedAt:    order.UpdatedAt,
+	}
+}
+
+func Orders(orders []model.Orders) []OrderResponse {
+	var result []OrderResponse
+	for _, order := range orders {
+		result = append(result, Order(&order))
+	}
+
+	if len(result) == 0 {
+		return []OrderResponse{}
+	}
+
+	return result
+}

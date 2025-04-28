@@ -34,6 +34,7 @@ func setupAppRoute(r *gin.RouterGroup, db *sql.DB) {
 	categoryController := controllers.NewCategoryController(db)
 	subCategoryController := controllers.NewSubCategoryController(db)
 	itemController := controllers.NewItemController(db)
+	orderController := controllers.NewOrderController(db)
 
 	category := r.Group("/categories")
 	{
@@ -60,5 +61,10 @@ func setupAppRoute(r *gin.RouterGroup, db *sql.DB) {
 		item.GET(":id", itemController.Show)
 		item.PUT(":id", itemController.Update)
 		item.DELETE(":id", itemController.Delete)
+	}
+
+	order := r.Group("/orders")
+	{
+		order.GET("", orderController.GetAll)
 	}
 }

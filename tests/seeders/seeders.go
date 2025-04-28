@@ -8,6 +8,7 @@ import (
 	"golang_gin/app/services"
 	"log"
 	"runtime/debug"
+	"time"
 )
 
 func SeedUser(db *sql.DB, username string, password string, name string) *model.Users {
@@ -38,4 +39,17 @@ func SeedCategory(db *sql.DB, name string) *model.Categories {
 	}
 
 	return category
+}
+
+func SeedOrder(db *sql.DB, date time.Time, orderNumber string, grandTotal int, customerName string) *model.Orders {
+	repository := repositories.NewOrderRepository(db)
+
+	result, err := repository.CreateOrder(date, orderNumber, grandTotal, customerName)
+
+	if err != nil {
+		log.Fatal(err, string(debug.Stack()))
+		return nil
+	}
+
+	return result
 }
