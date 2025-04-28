@@ -7,22 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ValidateCategoryCreateRequest(ctx *gin.Context) {
-	var input CreateCategoryRequest
-
-	inputRaw, err := DefaultValidationRule[CreateCategoryRequest](ctx)
-
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ValidationError(err))
-		return
-	}
-
-	input = *inputRaw
-
-	ctx.Set("validated", input)
-	ctx.Next()
-}
-
 func BasicValidation[T any](ctx *gin.Context) {
 	var input T
 
