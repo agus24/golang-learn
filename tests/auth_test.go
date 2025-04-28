@@ -2,6 +2,7 @@ package tests
 
 import (
 	"fmt"
+	"golang_gin/tests/helpers"
 	"golang_gin/tests/seeders"
 	"net/http"
 	"testing"
@@ -33,7 +34,7 @@ func TestLogin(test *testing.T) {
 
 	test.Run("It should return wrong username", func(test *testing.T) {
 		ResetDB(db)
-		loginBody, err := PrepareBody(map[string]any{
+		loginBody, err := helpers.PrepareBody(map[string]any{
 			"username": "test",
 			"password": "test",
 		})
@@ -58,7 +59,7 @@ func TestLogin(test *testing.T) {
 		ResetDB(db)
 		user := seeders.SeedUser(db, "user1", "password", "user 1")
 
-		loginBody, err := PrepareBody(map[string]any{
+		loginBody, err := helpers.PrepareBody(map[string]any{
 			"username": user.Username,
 			"password": "test",
 		})
@@ -83,7 +84,7 @@ func TestLogin(test *testing.T) {
 		ResetDB(db)
 		user := seeders.SeedUser(db, "user1", "password", "user 1")
 
-		loginBody, err := PrepareBody(map[string]any{
+		loginBody, err := helpers.PrepareBody(map[string]any{
 			"username": user.Username,
 			"password": "password",
 		})

@@ -1,14 +1,13 @@
 package tests
 
 import (
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"golang_gin/app/databases/model"
-	"golang_gin/app/libraries"
 	"golang_gin/config"
 	"golang_gin/routes"
+	"golang_gin/tests/helpers"
 	"golang_gin/tests/seeders"
 	"io"
 	"log"
@@ -49,16 +48,6 @@ func GetTestServer() (*httptest.Server, *sql.DB) {
 	return httptest.NewServer(Engine), Conn
 }
 
-func GetToken(user *model.Users) string {
-	token, err := libraries.NewPasetoToken().GenerateToken(user.ID)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return token
-}
-
 func ParseRequestBody(resp *http.Response) (map[string]any, error) {
 	defer resp.Body.Close()
 
@@ -71,16 +60,6 @@ func ParseRequestBody(resp *http.Response) (map[string]any, error) {
 	_ = json.Unmarshal(bodyBytes, &data)
 
 	return data, err
-}
-
-func PrepareBody(body map[string]any) (*bytes.Buffer, error) {
-	jsonBytes, err := json.Marshal(body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return bytes.NewBuffer(jsonBytes), nil
 }
 
 func ResetDB(db *sql.DB) {
@@ -133,7 +112,7 @@ func Authenticate(req *http.Request) *http.Request {
 		User = seeders.SeedUser(Conn, "user1", "password", "user 1")
 	}
 
-	generatedToken := GetToken(User)
+	generatedToken := helpers.GetToken(User)
 
 	req.Header.Set("Authorization", "Bearer "+generatedToken)
 	req.Header.Set("Content-Type", "application/json")

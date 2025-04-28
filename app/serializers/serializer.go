@@ -43,6 +43,10 @@ func Categories(categories []model.Categories) []CategoryResponse {
 		result = append(result, Category(&category))
 	}
 
+	if len(result) == 0 {
+		return []CategoryResponse{}
+	}
+
 	return result
 }
 
@@ -67,6 +71,10 @@ func SubCategories(subCategories []repositories.SubCategory) []SubCategoryRespon
 	var result []SubCategoryResponse
 	for _, subCategory := range subCategories {
 		result = append(result, SubCategory(&subCategory))
+	}
+
+	if len(result) == 0 {
+		return []SubCategoryResponse{}
 	}
 
 	return result
@@ -94,6 +102,10 @@ func Items(items []repositories.Item) []ItemResponse {
 	var result []ItemResponse
 	for _, item := range items {
 		result = append(result, Item(&item))
+	}
+
+	if len(result) == 0 {
+		return []ItemResponse{}
 	}
 
 	return result

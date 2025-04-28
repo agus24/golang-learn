@@ -7,6 +7,7 @@ import (
 	"golang_gin/app/requests"
 	"golang_gin/app/services"
 	"log"
+	"runtime/debug"
 )
 
 func SeedUser(db *sql.DB, username string, password string, name string) *model.Users {
@@ -19,7 +20,7 @@ func SeedUser(db *sql.DB, username string, password string, name string) *model.
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err, string(debug.Stack()))
 		return nil
 	}
 
@@ -29,10 +30,10 @@ func SeedUser(db *sql.DB, username string, password string, name string) *model.
 func SeedCategory(db *sql.DB, name string) *model.Categories {
 	service := services.NewCategoryService(repositories.NewCategoryRepository(db))
 
-	category, err := service.CreateCategory("Category 1")
+	category, err := service.CreateCategory(name)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err, string(debug.Stack()))
 		return nil
 	}
 
