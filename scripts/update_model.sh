@@ -8,7 +8,12 @@ set +o allexport
 # 2. Generate jet models
 jet -dsn="mysql://${DB_USER}:${DB_PASS}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}" -path=./app
 
-mv ./app/${DB_NAME} ./app/databases
+rm -rf ./app/databases/*
+
+mkdir ./app/databases
+
+mv -f ./app/${DB_NAME}/* ./app/databases
+echo "✅ Moved: ./app/${DB_NAME} to ./app/databases"
 
 find . -type f -path "./app/databases/table/*.go" -name "*.go" | while read -r file; do
 	echo "📝 Processing: $file"

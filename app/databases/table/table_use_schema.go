@@ -12,6 +12,8 @@ package table
 func UseSchema(schema string) {
 	Categories = Categories.FromSchema(schema)
 	Items = Items.FromSchema(schema)
+	OrderDetails = OrderDetails.FromSchema(schema)
+	Orders = Orders.FromSchema(schema)
 	Promotions = Promotions.FromSchema(schema)
 	SchemaMigrations = SchemaMigrations.FromSchema(schema)
 	SubCategories = SubCategories.FromSchema(schema)
