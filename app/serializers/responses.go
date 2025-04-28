@@ -7,6 +7,12 @@ type PaginationResponse struct {
 	PerPage int64 `json:"per_page"`
 }
 
+type ValidationErrorResponse struct {
+	Message         string            `json:"message"`
+	ErrorCode       string            `json:"error_code"`
+	ValidationError map[string]string `json:"validation_errors"`
+}
+
 type UserResponse struct {
 	ID        int64      `json:"id"`
 	Username  string     `json:"username"`

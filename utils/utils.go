@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/gookit/goutil/dump"
 )
 
@@ -67,4 +68,18 @@ func Dump(data any, isFatal bool) {
 	if isFatal {
 		log.Fatal("FATAL because dump")
 	}
+}
+
+func GenerateValidationErrors(err error) map[string]string {
+	errors := make(map[string]string)
+
+	if errs, ok := err.(validator.ValidationErrors); ok {
+		for _, e := range errs {
+			errors[e.Field()] = e.Tag()
+		}
+	} else {
+		errors["error"] = err.Error()
+	}
+
+	return errors
 }

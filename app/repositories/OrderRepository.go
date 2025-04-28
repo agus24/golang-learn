@@ -57,8 +57,6 @@ func (self *OrderRepository) GetAll(search string, page int64, perPage int64) ([
 func (self *OrderRepository) GetOrderById(id int64) (*model.Orders, error) {
 	stmt := SELECT(Orders.AllColumns).FROM(Orders).WHERE(Orders.ID.EQ(Int(id)))
 
-	println(stmt.DebugSql())
-
 	return self.getSingle(stmt)
 }
 
@@ -75,8 +73,6 @@ func (self *OrderRepository) CreateOrder(date time.Time, orderNumber string, gra
 	}
 
 	id, err := result.LastInsertId()
-
-	println(id)
 
 	if err != nil {
 		return nil, err

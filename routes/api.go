@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"golang_gin/app/controllers"
 	"golang_gin/app/middlewares"
+	"golang_gin/app/requests"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,9 +40,9 @@ func setupAppRoute(r *gin.RouterGroup, db *sql.DB) {
 	category := r.Group("/categories")
 	{
 		category.GET("", categoryController.GetAllCategories)
-		category.POST("", categoryController.CreateCategory)
+		category.POST("", requests.BasicValidation[requests.CreateCategoryRequest], categoryController.CreateCategory)
 		category.GET(":id", categoryController.GetCategory)
-		category.PUT(":id", categoryController.UpdateCategory)
+		category.PUT(":id", requests.BasicValidation[requests.UpdateCategoryRequest], categoryController.UpdateCategory)
 		category.DELETE(":id", categoryController.DeleteCategory)
 	}
 

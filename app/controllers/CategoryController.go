@@ -40,12 +40,8 @@ func (self *CategoryController) GetAllCategories(ctx *gin.Context) {
 }
 
 func (self *CategoryController) CreateCategory(ctx *gin.Context) {
-	var input requests.CreateCategoryRequest
-
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
+	raw, _ := ctx.Get("validated")
+	input := raw.(requests.CreateCategoryRequest)
 
 	category, err := self.service.CreateCategory(input.Name)
 	utils.Handle(ctx, func() gin.H {
@@ -67,14 +63,10 @@ func (self *CategoryController) GetCategory(ctx *gin.Context) {
 
 func (self *CategoryController) UpdateCategory(ctx *gin.Context) {
 	id := utils.ParseToInt(ctx, ctx.Param("id"))
-	var input requests.UpdateCategoryRequest
 
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
+	raw, _ := ctx.Get("validated")
+	input := raw.(requests.UpdateCategoryRequest)
 
-	// check unique name
 	_, err := self.service.Repo.GetCategoryByName(input.Name, *id)
 
 	if err == nil {

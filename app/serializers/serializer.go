@@ -3,12 +3,21 @@ package serializers
 import (
 	"golang_gin/app/databases/model"
 	"golang_gin/app/repositories"
+	"golang_gin/utils"
 )
 
 func Pagination(page, perPage *int64) PaginationResponse {
 	return PaginationResponse{
 		Page:    *page,
 		PerPage: *perPage,
+	}
+}
+
+func ValidationError(err error) ValidationErrorResponse {
+	return ValidationErrorResponse{
+		Message:         "Invalid Input",
+		ErrorCode:       "validation_failed",
+		ValidationError: utils.GenerateValidationErrors(err),
 	}
 }
 
