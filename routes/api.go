@@ -26,7 +26,7 @@ func setupAuthRoutes(r *gin.RouterGroup, db *sql.DB) {
 
 	auth := r.Group("/auth")
 
-	auth.POST("/login", authController.Login)
+	auth.POST("/login", requests.BasicValidation[requests.LoginRequest], authController.Login)
 	auth.GET("/user", middlewares.AuthMiddleware, authController.User)
 	auth.POST("/user", middlewares.AuthMiddleware, userController.CreateUser)
 }

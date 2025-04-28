@@ -48,7 +48,7 @@ func GetTestServer() (*httptest.Server, *sql.DB) {
 	return httptest.NewServer(Engine), Conn
 }
 
-func ParseRequestBody(resp *http.Response) (map[string]any, error) {
+func ParseResponseBody(resp *http.Response) (map[string]any, error) {
 	defer resp.Body.Close()
 
 	bodyBytes, err := io.ReadAll(resp.Body)

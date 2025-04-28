@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"golang_gin/app/repositories"
+	"golang_gin/app/requests"
 	"golang_gin/app/serializers"
 	"golang_gin/app/services"
 	"net/http"
@@ -15,11 +16,6 @@ type AuthController struct {
 	service *services.UserService
 }
 
-type LoginRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
 func NewAuthController(db *sql.DB) *AuthController {
 	service := services.NewUserService(repositories.NewUserRepository(db))
 	return &AuthController{
@@ -28,12 +24,8 @@ func NewAuthController(db *sql.DB) *AuthController {
 }
 
 func (self AuthController) Login(ctx *gin.Context) {
-	var req LoginRequest
-
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
-		return
-	}
+	raw, _ := ctx.Get("validated")
+	req := raw.(requests.LoginRequest)
 
 	output, err := self.service.LoginUser(req.Username, req.Password)
 

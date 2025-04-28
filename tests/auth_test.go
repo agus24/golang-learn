@@ -14,22 +14,24 @@ func TestLogin(test *testing.T) {
 	testServer, db := GetTestServer()
 	defer testServer.Close()
 
+	builder := helpers.NewHttpRequestBuilder(testServer.URL, db).SetToken(nil)
+
 	test.Run("It should return validation error", func(test *testing.T) {
 		ResetDB(db)
-		resp, err := http.Post(fmt.Sprintf("%s/api/v1/auth/login", testServer.URL), "application/json", nil)
+		resp, err := builder.BuildAndRun("POST", "/api/v1/auth/login", nil)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
 		}
 
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
 		}
 
 		assert.Equal(test, 400, resp.StatusCode)
-		assert.Equal(test, data["error"], "Invalid request")
+		assert.Equal(test, data["error_code"], "validation_failed")
 	})
 
 	test.Run("It should return wrong username", func(test *testing.T) {
@@ -45,7 +47,7 @@ func TestLogin(test *testing.T) {
 			test.Fatalf("Expected no error, got %v", err)
 		}
 
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
@@ -70,7 +72,7 @@ func TestLogin(test *testing.T) {
 			test.Fatalf("Expected no error, got %v", err)
 		}
 
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
@@ -95,7 +97,7 @@ func TestLogin(test *testing.T) {
 			test.Fatalf("Expected no error, got %v", err)
 		}
 
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)

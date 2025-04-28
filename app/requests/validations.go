@@ -13,7 +13,6 @@ func BasicValidation[T any](ctx *gin.Context) {
 	inputRaw, err := DefaultValidationRule[T](ctx)
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, serializers.ValidationError(err))
 		return
 	}
 

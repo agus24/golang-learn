@@ -24,7 +24,7 @@ func TestOrderIndex(test *testing.T) {
 		ResetDB(db)
 
 		resp, _ := builder.BuildAndRun("GET", "/api/v1/app/categories", nil)
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
 		}
@@ -41,7 +41,7 @@ func TestOrderIndex(test *testing.T) {
 
 		resp, _ := builder.BuildAndRun("GET", "/api/v1/app/orders", nil)
 
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
 		}
@@ -67,7 +67,7 @@ func TestOrderIndex(test *testing.T) {
 		body := map[string]any{"page": "1"}
 
 		resp, _ := builder.BuildAndRun("GET", "/api/v1/app/orders", body)
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
 		}
@@ -83,7 +83,7 @@ func TestOrderIndex(test *testing.T) {
 		body = map[string]any{"page": "2"}
 		resp, _ = builder.BuildAndRun("GET", "/api/v1/app/orders", body)
 
-		data, err = ParseRequestBody(resp)
+		data, err = ParseResponseBody(resp)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
@@ -102,7 +102,7 @@ func TestOrderIndex(test *testing.T) {
 		body = map[string]any{"page": "asd"}
 		resp, _ = builder.BuildAndRun("GET", "/api/v1/app/orders", body)
 
-		data, err = ParseRequestBody(resp)
+		data, err = ParseResponseBody(resp)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
@@ -125,14 +125,14 @@ func TestOrderIndex(test *testing.T) {
 		orderDate := time.Now()
 
 		for i := range 20 {
-			order := *seeders.SeedOrder(db, orderDate, "ORD12-"+strconv.Itoa(i), 100_000, "Customer "+strconv.Itoa(i))
+			order := *seeders.SeedOrder(db, orderDate, "ORD-"+strconv.Itoa(i), 100_000, "Customer "+strconv.Itoa(i))
 			orders = append(orders, order)
 		}
 
-		body = map[string]any{"search": "ORD12-0"}
+		body = map[string]any{"search": "ORD-0"}
 		resp, _ = builder.BuildAndRun("GET", "/api/v1/app/orders", body)
 
-		data, err = ParseRequestBody(resp)
+		data, err = ParseResponseBody(resp)
 
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
@@ -142,7 +142,7 @@ func TestOrderIndex(test *testing.T) {
 
 		assert.Equal(test, 200, resp.StatusCode)
 		assert.Equal(test, 1, len(data["data"].([]any)))
-		assert.Equal(test, "ORD12-0", orderData[0].(map[string]any)["order_number"])
+		assert.Equal(test, "ORD-0", orderData[0].(map[string]any)["order_number"])
 		assert.Equal(test, orders[0].ID, int64(orderData[0].(map[string]any)["id"].(float64)))
 	})
 }

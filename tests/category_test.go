@@ -22,7 +22,7 @@ func TestCategoryIndex(test *testing.T) {
 		ResetDB(db)
 
 		resp, _ := builder.BuildAndRun("GET", "/api/v1/app/categories", nil)
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
 		}
@@ -37,7 +37,7 @@ func TestCategoryIndex(test *testing.T) {
 		category := seeders.SeedCategory(db, "Category 1")
 
 		resp, _ := builder.BuildAndRun("GET", "/api/v1/app/categories", nil)
-		data, err := ParseRequestBody(resp)
+		data, err := ParseResponseBody(resp)
 		if err != nil {
 			test.Fatalf("Expected no error, got %v", err)
 		}
@@ -64,7 +64,7 @@ func TestCategoryIndex(test *testing.T) {
 		body := map[string]any{"search": "test"}
 
 		resp, _ := builder.BuildAndRun("GET", "/api/v1/app/categories", body)
-		data, _ := ParseRequestBody(resp)
+		data, _ := ParseResponseBody(resp)
 
 		assert.Equal(test, 200, resp.StatusCode)
 		assert.Equal(test, 0, len(data["data"].([]any)))
@@ -72,7 +72,7 @@ func TestCategoryIndex(test *testing.T) {
 		body = map[string]any{"search": "Category 11"}
 
 		resp, _ = builder.BuildAndRun("GET", "/api/v1/app/categories", body)
-		data, _ = ParseRequestBody(resp)
+		data, _ = ParseResponseBody(resp)
 
 		categoryData := data["data"].([]any)
 
@@ -95,7 +95,7 @@ func TestCategoryCreate(test *testing.T) {
 		ResetDB(db)
 
 		resp, _ := builder.BuildAndRun("POST", "/api/v1/app/categories", nil)
-		data, _ := ParseRequestBody(resp)
+		data, _ := ParseResponseBody(resp)
 
 		assert.Equal(test, 400, resp.StatusCode)
 		assert.Equal(test, "validation_failed", data["error_code"])
@@ -108,7 +108,7 @@ func TestCategoryCreate(test *testing.T) {
 		body := map[string]any{"name": "Category 1"}
 
 		resp, _ := builder.BuildAndRun("POST", "/api/v1/app/categories", body)
-		data, _ := ParseRequestBody(resp)
+		data, _ := ParseResponseBody(resp)
 
 		categoryData := data["data"].(map[string]any)
 
