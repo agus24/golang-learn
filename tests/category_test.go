@@ -15,8 +15,8 @@ func TestCategoryIndex(test *testing.T) {
 	testServer, db := GetTestServer()
 	defer testServer.Close()
 
-	builder := helpers.NewHttpRequestBuilder(testServer.URL, db).
-		SetToken(nil)
+	ResetDB(db)
+	builder := helpers.NewHttpRequestBuilder(testServer.URL, db).SetToken(nil)
 
 	test.Run("It should return empty", func(test *testing.T) {
 		ResetDB(db)
