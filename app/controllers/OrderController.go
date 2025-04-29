@@ -5,7 +5,7 @@ import (
 	"golang_gin/app/repositories"
 	"golang_gin/app/serializers"
 	"golang_gin/app/services"
-	"golang_gin/utils"
+	"golang_gin/app/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

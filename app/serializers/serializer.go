@@ -3,7 +3,7 @@ package serializers
 import (
 	"golang_gin/app/databases/model"
 	"golang_gin/app/repositories"
-	"golang_gin/utils"
+	"golang_gin/app/utils"
 )
 
 func Pagination(page, perPage *int64) PaginationResponse {

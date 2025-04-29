@@ -6,7 +6,7 @@ import (
 
 	"golang_gin/app/databases/model"
 	. "golang_gin/app/databases/table"
-	"golang_gin/utils"
+	"golang_gin/app/utils"
 
 	. "github.com/go-jet/jet/v2/mysql"
 )

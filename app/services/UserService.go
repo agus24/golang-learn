@@ -6,7 +6,7 @@ import (
 	. "golang_gin/app/libraries"
 	"golang_gin/app/repositories"
 	"golang_gin/app/requests"
-	"golang_gin/utils"
+	"golang_gin/app/utils"
 )
 
 type UserService struct {

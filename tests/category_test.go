@@ -2,9 +2,9 @@ package tests
 
 import (
 	"golang_gin/app/databases/model"
+	"golang_gin/app/utils"
 	"golang_gin/tests/helpers"
 	"golang_gin/tests/seeders"
-	"golang_gin/utils"
 	"strconv"
 	"testing"
 
