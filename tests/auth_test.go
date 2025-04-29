@@ -2,7 +2,7 @@ package tests
 
 import (
 	"fmt"
-	"golang_gin/tests/helpers"
+	"golang_gin/app/helpers"
 	"golang_gin/tests/seeders"
 	"net/http"
 	"testing"
