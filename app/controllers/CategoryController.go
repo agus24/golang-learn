@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"golang_gin/app/databases/model"
 	"golang_gin/app/repositories"
 	"golang_gin/app/requests"
 	"golang_gin/app/serializers"
@@ -43,7 +44,11 @@ func (self *CategoryController) CreateCategory(ctx *gin.Context) {
 	raw, _ := ctx.Get("validated")
 	input := raw.(requests.CreateCategoryRequest)
 
-	category, err := self.service.CreateCategory(input.Name)
+	categories := model.Categories{
+		Name: input.Name,
+	}
+
+	category, err := self.service.CreateCategory(categories.Name)
 	utils.Handle(ctx, func() gin.H {
 		return gin.H{"data": serializers.Category(category)}
 	}, err, http.StatusOK)

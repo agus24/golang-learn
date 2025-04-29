@@ -84,10 +84,10 @@ func (self *SubCategoryRepository) GetSubCategoryByName(name string) (*SubCatego
 	return self.getSingle(stmt)
 }
 
-func (self *SubCategoryRepository) CreateSubCategory(name string, categoryID int64) (*SubCategory, error) {
+func (self *SubCategoryRepository) CreateSubCategory(categoryDto CategoryDTO, categoryID int64) (*SubCategory, error) {
 	utils.StartTransaction(self.db)
 	stmt := SubCategories.INSERT(SubCategories.Name, SubCategories.CategoryID).
-		VALUES(name, categoryID)
+		VALUES(categoryDto.Name, categoryDto.CategoryID)
 
 	result, err := stmt.Exec(self.db)
 

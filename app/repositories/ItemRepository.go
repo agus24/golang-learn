@@ -6,6 +6,7 @@ import (
 
 	"golang_gin/app/databases/model"
 	. "golang_gin/app/databases/table"
+	"golang_gin/app/requests"
 	"golang_gin/app/utils"
 
 	. "github.com/go-jet/jet/v2/mysql"
@@ -78,9 +79,10 @@ func (self *ItemRepository) GetById(id int64) (*Item, error) {
 	return self.getSingle(stmt)
 }
 
-func (self *ItemRepository) Create(name string, price int, subCategoryId int64) (*Item, error) {
+func (self *ItemRepository) Create(data requests.ItemCreateRequest) (*Item, error) {
 	utils.StartTransaction(self.db)
-	stmt := Items.INSERT(Items.Name, Items.Price, Items.SubCategoryID).VALUES(name, price, subCategoryId)
+	stmt := Items.INSERT(Items.Name, Items.Price, Items.SubCategoryID).
+		VALUES(data.Name, data.Price, data.SubCategoryID)
 
 	result, err := stmt.Exec(self.db)
 
@@ -97,9 +99,11 @@ func (self *ItemRepository) Create(name string, price int, subCategoryId int64) 
 	return self.GetById(id)
 }
 
-func (self *ItemRepository) Update(id int64, name string, price int, subCategoryId int64) (*Item, error) {
+func (self *ItemRepository) Update(id int64, data requests.ItemUpdateRequest) (*Item, error) {
 	utils.StartTransaction(self.db)
-	stmt := Items.UPDATE(Items.Name, Items.Price, Items.SubCategoryID).SET(name, price, subCategoryId).WHERE(Items.ID.EQ(Int64(id)))
+	stmt := Items.UPDATE(Items.Name, Items.Price, Items.SubCategoryID).
+		SET(data.Name, data.Price, data.SubCategoryID).
+		WHERE(Items.ID.EQ(Int64(id)))
 
 	_, err := stmt.Exec(self.db)
 
