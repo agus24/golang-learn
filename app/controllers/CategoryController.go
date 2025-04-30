@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"errors"
 	"golang_gin/app/databases/model"
 	"golang_gin/app/repositories"
 	"golang_gin/app/requests"
@@ -22,6 +23,7 @@ func NewCategoryController(db *sql.DB) *CategoryController {
 }
 
 func (self *CategoryController) GetAllCategories(ctx *gin.Context) {
+	panic(errors.New("errors bang"))
 	search := ctx.DefaultQuery("search", "")
 	pageQuery := ctx.DefaultQuery("page", "1")
 	perPageQuery := ctx.DefaultQuery("per_page", "")

@@ -19,6 +19,7 @@ func (route *Route) SetupRoutes(conn *sql.DB) *gin.Engine {
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 	r.Use(middlewares.CorsMiddleware())
+	r.Use(middlewares.CatchAllMiddleware)
 	// r.Use(middlewares.RateLimiterMiddleware())
 
 	r.GET("/__health", func(c *gin.Context) {

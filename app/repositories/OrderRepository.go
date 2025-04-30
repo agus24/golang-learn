@@ -5,8 +5,8 @@ import (
 	"errors"
 	"golang_gin/app/databases/model"
 	. "golang_gin/app/databases/table"
+	"golang_gin/app/dtos"
 	"golang_gin/app/utils"
-	"time"
 
 	. "github.com/go-jet/jet/v2/mysql"
 )
@@ -15,19 +15,60 @@ type OrderRepository struct {
 	Db *sql.DB
 }
 
+type Order struct {
+	model.Orders
+	Details []OrderDetail
+}
+
+type OrderDetail struct {
+	model.OrderDetails
+	ItemName string
+}
+
+type OrderRow struct {
+	model.Orders
+	model.OrderDetails
+	model.Items
+}
+
 func NewOrderRepository(db *sql.DB) OrderRepository {
 	return OrderRepository{Db: db}
 }
 
-func (self *OrderRepository) getMultiple(stmt SelectStatement) ([]model.Orders, error) {
-	var results []model.Orders
+func (self *OrderRepository) getMultiple(stmt SelectStatement) ([]Order, error) {
+	var results []OrderRow
 
 	err := stmt.Query(self.Db, &results)
 
-	return results, err
+	return self.mapFromRow(results), err
 }
 
-func (self *OrderRepository) getSingle(stmt SelectStatement) (*model.Orders, error) {
+func (self *OrderRepository) mapFromRow(rows []OrderRow) (orders []Order) {
+	var orderMap = make(map[int64]*Order)
+
+	for _, row := range rows {
+		order, exists := orderMap[row.Orders.ID]
+		if !exists {
+			order = &Order{Orders: row.Orders}
+			orderMap[row.Orders.ID] = order
+		}
+
+		orderDetail := OrderDetail{
+			OrderDetails: row.OrderDetails,
+			ItemName:     row.Items.Name,
+		}
+
+		order.Details = append(order.Details, orderDetail)
+	}
+
+	for _, order := range orderMap {
+		orders = append(orders, *order)
+	}
+
+	return orders
+}
+
+func (self *OrderRepository) getSingle(stmt SelectStatement) (*Order, error) {
 	results, err := self.getMultiple(stmt)
 
 	if len(results) == 0 {
@@ -37,7 +78,7 @@ func (self *OrderRepository) getSingle(stmt SelectStatement) (*model.Orders, err
 	return &results[0], err
 }
 
-func (self *OrderRepository) GetAll(search string, page int64, perPage int64) ([]model.Orders, error) {
+func (self *OrderRepository) GetAll(search string, page int64, perPage int64) ([]Order, error) {
 	stmt := SELECT(Orders.AllColumns).FROM(Orders)
 
 	if search != "" {
@@ -54,17 +95,26 @@ func (self *OrderRepository) GetAll(search string, page int64, perPage int64) ([
 	return self.getMultiple(stmt)
 }
 
-func (self *OrderRepository) GetOrderById(id int64) (*model.Orders, error) {
+func (self *OrderRepository) GetOrderByIdWithDetail(id int64) (*Order, error) {
+	stmt := SELECT(Orders.AllColumns, OrderDetails.AllColumns, Items.Name).FROM(
+		Orders.INNER_JOIN(OrderDetails, OrderDetails.OrderID.EQ(Orders.ID)).
+			INNER_JOIN(Items, Items.ID.EQ(OrderDetails.ItemID)),
+	).WHERE(Orders.ID.EQ(Int(id)))
+
+	return self.getSingle(stmt)
+}
+
+func (self *OrderRepository) GetOrderById(id int64) (*Order, error) {
 	stmt := SELECT(Orders.AllColumns).FROM(Orders).WHERE(Orders.ID.EQ(Int(id)))
 
 	return self.getSingle(stmt)
 }
 
-func (self *OrderRepository) CreateOrder(date time.Time, orderNumber string, grandTotal int, customerName string) (*model.Orders, error) {
+func (self *OrderRepository) CreateOrder(input dtos.OrderDTO) (*Order, error) {
 	utils.StartTransaction(self.Db)
 
 	stmt := Orders.INSERT(Orders.Date, Orders.OrderNumber, Orders.GrandTotal, Orders.CustomerName).
-		VALUES(date, orderNumber, grandTotal, customerName)
+		VALUES(input.Date, input.OrderNumber, input.GrandTotal, input.CustomerName)
 
 	result, err := stmt.Exec(self.Db)
 
@@ -78,23 +128,17 @@ func (self *OrderRepository) CreateOrder(date time.Time, orderNumber string, gra
 		return nil, err
 	}
 
+	detailStmt := OrderDetails.INSERT(OrderDetails.OrderID, OrderDetails.ItemID, OrderDetails.Quantity, OrderDetails.Price)
+
+	for _, detail := range input.Details {
+		detailStmt = detailStmt.VALUES(id, detail.ItemID, detail.Quantity, detail.Price)
+	}
+
+	result, err = detailStmt.Exec(self.Db)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return self.GetOrderById(id)
-}
-
-func (self *OrderRepository) UpdateGrandTotal(id int64, grandTotal int) error {
-	stmt := Orders.UPDATE(Orders.GrandTotal).SET(grandTotal).WHERE(Orders.ID.EQ(Int(id)))
-
-	_, err := stmt.Exec(self.Db)
-
-	return err
-}
-
-func (self *OrderRepository) CreateDetail(orderId int64, itemId int64, quantity int, price int) error {
-	utils.StartTransaction(self.Db)
-	stmt := OrderDetails.INSERT(OrderDetails.OrderID, OrderDetails.ItemID, OrderDetails.Quantity, OrderDetails.Price).
-		VALUES(orderId, itemId, quantity, price)
-
-	_, err := stmt.Exec(self.Db)
-
-	return err
 }

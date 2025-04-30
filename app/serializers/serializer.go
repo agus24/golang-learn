@@ -120,7 +120,7 @@ func Items(items []repositories.Item) []ItemResponse {
 	return result
 }
 
-func Order(order *model.Orders) OrderResponse {
+func Order(order *repositories.Order) OrderResponse {
 	return OrderResponse{
 		ID:           order.ID,
 		Date:         order.Date,
@@ -129,10 +129,11 @@ func Order(order *model.Orders) OrderResponse {
 		CustomerName: order.CustomerName,
 		CreatedAt:    order.CreatedAt,
 		UpdatedAt:    order.UpdatedAt,
+		Details:      OrderDetails(order.Details),
 	}
 }
 
-func Orders(orders []model.Orders) []OrderResponse {
+func Orders(orders []repositories.Order) []OrderResponse {
 	var result []OrderResponse
 	for _, order := range orders {
 		result = append(result, Order(&order))
@@ -140,6 +141,37 @@ func Orders(orders []model.Orders) []OrderResponse {
 
 	if len(result) == 0 {
 		return []OrderResponse{}
+	}
+
+	return result
+}
+
+func OrderDetail(orderDetail *repositories.OrderDetail) OrderDetailResponse {
+	utils.Dump(orderDetail, false)
+	return OrderDetailResponse{
+		ID:        orderDetail.ID,
+		OrderID:   orderDetail.OrderID,
+		ItemID:    orderDetail.ItemID,
+		Quantity:  orderDetail.Quantity,
+		Price:     orderDetail.Price,
+		ItemName:  orderDetail.ItemName,
+		CreatedAt: orderDetail.CreatedAt,
+		UpdatedAt: orderDetail.UpdatedAt,
+	}
+}
+
+func OrderDetails(orderDetails []repositories.OrderDetail) []OrderDetailResponse {
+	var result []OrderDetailResponse
+	for _, orderDetail := range orderDetails {
+		if orderDetail.ID == 0 {
+			continue
+		}
+
+		result = append(result, OrderDetail(&orderDetail))
+	}
+
+	if len(result) == 0 {
+		return []OrderDetailResponse{}
 	}
 
 	return result

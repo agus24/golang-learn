@@ -67,5 +67,7 @@ func setupAppRoute(r *gin.RouterGroup, db *sql.DB) {
 	order := r.Group("/orders")
 	{
 		order.GET("", orderController.GetAll)
+		order.POST("", requests.BasicValidation[requests.CreateOrderRequest], orderController.Create)
+		order.GET(":id", orderController.Show)
 	}
 }

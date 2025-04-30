@@ -6,7 +6,6 @@ import (
 
 	"golang_gin/app/databases/model"
 	. "golang_gin/app/databases/table"
-	"golang_gin/app/requests"
 	"golang_gin/app/utils"
 
 	. "github.com/go-jet/jet/v2/mysql"
@@ -79,10 +78,10 @@ func (self *ItemRepository) GetById(id int64) (*Item, error) {
 	return self.getSingle(stmt)
 }
 
-func (self *ItemRepository) Create(data requests.ItemCreateRequest) (*Item, error) {
+func (self *ItemRepository) Create(name string, price int, subCategoryID int64) (*Item, error) {
 	utils.StartTransaction(self.db)
 	stmt := Items.INSERT(Items.Name, Items.Price, Items.SubCategoryID).
-		VALUES(data.Name, data.Price, data.SubCategoryID)
+		VALUES(name, price, subCategoryID)
 
 	result, err := stmt.Exec(self.db)
 
@@ -99,10 +98,10 @@ func (self *ItemRepository) Create(data requests.ItemCreateRequest) (*Item, erro
 	return self.GetById(id)
 }
 
-func (self *ItemRepository) Update(id int64, data requests.ItemUpdateRequest) (*Item, error) {
+func (self *ItemRepository) Update(id int64, name string, price int, subCategoryID int64) (*Item, error) {
 	utils.StartTransaction(self.db)
 	stmt := Items.UPDATE(Items.Name, Items.Price, Items.SubCategoryID).
-		SET(data.Name, data.Price, data.SubCategoryID).
+		SET(name, price, subCategoryID).
 		WHERE(Items.ID.EQ(Int64(id)))
 
 	_, err := stmt.Exec(self.db)
@@ -112,6 +111,17 @@ func (self *ItemRepository) Update(id int64, data requests.ItemUpdateRequest) (*
 	}
 
 	return self.GetById(id)
+}
+
+func (self *ItemRepository) GetItemByIds(ids []int64) ([]Item, error) {
+	exprs := make([]Expression, len(ids))
+	for i, id := range ids {
+		exprs[i] = Int64(id)
+	}
+
+	stmt := SELECT(Items.AllColumns).FROM(Items).WHERE(Items.ID.IN(exprs...))
+
+	return self.getMultiple(stmt)
 }
 
 func (self *ItemRepository) Delete(id int64) error {

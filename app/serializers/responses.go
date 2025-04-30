@@ -48,11 +48,23 @@ type ItemResponse struct {
 }
 
 type OrderResponse struct {
-	ID           int64      `json:"id"`
-	Date         time.Time  `json:"date"`
-	OrderNumber  string     `json:"order_number"`
-	GrandTotal   int32      `json:"grand_total"`
-	CustomerName string     `json:"customer_name"`
-	CreatedAt    *time.Time `json:"created_at,omitempty"`
-	UpdatedAt    *time.Time `json:"updated_at,omitempty"`
+	ID           int64                 `json:"id"`
+	Date         time.Time             `json:"date"`
+	OrderNumber  string                `json:"order_number"`
+	GrandTotal   int32                 `json:"grand_total"`
+	CustomerName string                `json:"customer_name"`
+	Details      []OrderDetailResponse `json:"details"`
+	CreatedAt    *time.Time            `json:"created_at,omitempty"`
+	UpdatedAt    *time.Time            `json:"updated_at,omitempty"`
+}
+
+type OrderDetailResponse struct {
+	ID        int64      `json:"id"`
+	OrderID   int64      `json:"order_id"`
+	ItemID    int64      `json:"item_id"`
+	Quantity  int32      `json:"quantity"`
+	Price     int32      `json:"price"`
+	ItemName  string     `json:"item_name"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }

@@ -24,11 +24,11 @@ func (self *ItemService) GetById(id int64) (*repositories.Item, error) {
 }
 
 func (self *ItemService) Create(input requests.ItemCreateRequest) (*repositories.Item, error) {
-	return self.ItemRepository.Create(input)
+	return self.ItemRepository.Create(input.Name, input.Price, input.SubCategoryID)
 }
 
 func (self *ItemService) Update(id int64, input requests.ItemUpdateRequest) (*repositories.Item, error) {
-	return self.ItemRepository.Update(id, input)
+	return self.ItemRepository.Update(id, input.Name, input.Price, input.SubCategoryID)
 }
 
 func (self *ItemService) Delete(id int64) error {
